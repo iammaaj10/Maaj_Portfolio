@@ -120,25 +120,25 @@ const AnimatedCard = ({ children, delay = 0, className = "" }) => {
 // --- System Bootup Intro Component (Matrix/Glitched Reveal) ---
 
 const IntroSplash = ({ onAnimationEnd }) => {
-    const [typedText, setTypedText] = useState("");
-    const fullText = "> SYSTEM BOOTUP: ACCESS GRANTED. INITIATING UI...";
-    const indexRef = useRef(0);
+    const [typedText, setTypedText] = useState("");
+    const fullText = "> SYSTEM BOOTUP: ACCESS GRANTED. INITIATING UI...";
+    const indexRef = useRef(0);
 
-    useEffect(() => {
-        const typingInterval = setInterval(() => {
-            const currentI = indexRef.current; 
+    useEffect(() => {
+        const typingInterval = setInterval(() => {
+            const currentI = indexRef.current; 
 
-            if (currentI < fullText.length) {
-                setTypedText(prev => prev + fullText[currentI]);
-                indexRef.current = currentI + 1; 
-            } else {
-                clearInterval(typingInterval);
-                setTimeout(onAnimationEnd, 1000); // Short delay before split
-            }
-        }, 50); // Fast matrix typing speed
+            if (currentI < fullText.length) {
+                setTypedText(prev => prev + fullText[currentI]);
+                indexRef.current = currentI + 1; 
+            } else {
+                clearInterval(typingInterval);
+                setTimeout(onAnimationEnd, 1000); // Short delay before split
+            }
+        }, 50); // Fast matrix typing speed
 
-        return () => clearInterval(typingInterval);
-    }, [onAnimationEnd]);
+        return () => clearInterval(typingInterval);
+    }, [onAnimationEnd]);
     
     return (
         <div className="fixed inset-0 z-[100] bg-gray-950 flex flex-col items-center justify-center space-y-4 font-mono">
@@ -152,13 +152,12 @@ const IntroSplash = ({ onAnimationEnd }) => {
                 }}
             />
             
-            <h1 className="text-2xl md:text-4xl text-lime-400 tracking-wider z-10" 
-                style={{ animation: 'glitch 0.3s linear infinite alternate' }}>
-                {typedText}
-            </h1>
-            <p className="text-fuchsia-400 text-sm animate-pulse z-10">
-                // DATA STREAM ESTABLISHED
-            </p>
+           <h1 className="text-2xl md:text-4xl text-lime-400 tracking-wider z-10">
+                {typedText}
+            </h1>
+            <p className="text-fuchsia-400 text-sm animate-pulse z-10">
+                // DATA STREAM ESTABLISHED
+            </p>
         </div>
     );
 };
