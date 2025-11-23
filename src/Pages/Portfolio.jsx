@@ -367,7 +367,7 @@ const Portfolio = () => {
   ];
 
   const achievements = [
-    { text: "Solved 200+ coding problems on LeetCode", icon: <Star size={20} /> },
+    { text: "Solved 300+ coding problems on LeetCode", icon: <Star size={20} /> },
     { text: "Internal Hackathon Winner - 1st place in Smart India Hackathon (2024)", icon: <Award size={20} /> },
     { text: "Google Cloud Storage Skill Badge (2024)", icon: <Cloud size={20} /> },
     { text: "AWS Cloud Technical Essentials (2025)", icon: <Cloud size={20} /> },
