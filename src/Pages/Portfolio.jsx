@@ -24,7 +24,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-// --- Utility Components (Unchanged) ---
+// --- Utility Components ---
 
 // Floating 3D Orb Component
 const FloatingOrb = ({ delay = 0, size = "large" }) => {
@@ -46,8 +46,6 @@ const FloatingOrb = ({ delay = 0, size = "large" }) => {
     };
     
     animate();
-    // Cleanup is not strictly necessary for rAF loop here, but good practice
-    // return () => cancelAnimationFrame(animate); 
   }, [delay]);
   
   const sizeClasses = {
@@ -159,33 +157,29 @@ const AnimatedCard = ({ children, delay = 0, className = "" }) => {
   );
 };
 
-// --- New Intro Component ---
+// --- Intro Component ---
 
 const IntroSplash = ({ onAnimationEnd }) => {
   const [typedText, setTypedText] = useState("");
   const fullText = "Hey mate, welcome to the world of 0s and 1s...";
-  const indexRef = useRef(0); // Use a ref to track the current character index
+  const indexRef = useRef(0);
 
   useEffect(() => {
     const typingInterval = setInterval(() => {
-      // Get the current index from the ref
       const currentI = indexRef.current; 
 
       if (currentI < fullText.length) {
-        // Use the functional form to append the next character
         setTypedText(prev => prev + fullText[currentI]);
-        
-        // Increment the ref
         indexRef.current = currentI + 1; 
       } else {
         clearInterval(typingInterval);
-        // Wait a moment after typing is complete before starting the split
         setTimeout(onAnimationEnd, 1500); 
       }
-    }, 100); // <-- Increased to 100ms for robust rendering
+    }, 100); 
 
     return () => clearInterval(typingInterval);
   }, [onAnimationEnd]);
+  
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center">
       <h1 className="text-4xl md:text-6xl font-mono text-purple-400 border-r-4 border-white pr-2 whitespace-nowrap overflow-hidden animate-pulse">
@@ -209,7 +203,6 @@ const Portfolio = () => {
     setShowPortfolio(true);
     setTimeout(() => {
       setIntroFinished(true);
-      // Ensure smooth scrolling starts at the top after intro
       window.scrollTo(0, 0); 
     }, 1500); // Duration matches CSS transition duration
   };
@@ -221,14 +214,12 @@ const Portfolio = () => {
 
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      // Only track active section if intro is finished
       if (introFinished) { 
         const sections = ["home", "about", "projects", "experience", "contact"];
         for (const section of sections) {
           const element = document.getElementById(section);
           if (element) {
             const rect = element.getBoundingClientRect();
-            // Check if section is approximately in the viewport center (top 100px)
             if (rect.top <= 100 && rect.bottom >= 100) { 
               setActiveSection(section);
               break;
@@ -240,11 +231,6 @@ const Portfolio = () => {
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll);
-
-    // Skip intro if already seen (e.g., development environment)
-    // if (process.env.NODE_ENV === 'development') { 
-    //   setIntroFinished(true);
-    // }
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -367,7 +353,11 @@ const Portfolio = () => {
   ];
 
   const achievements = [
-    { text: "Solved 300+ coding problems on LeetCode", icon: <Star size={20} /> },
+    { 
+        text: "Solved 350+ coding problems on LeetCode", 
+        icon: <Star size={20} />, 
+        link: "https://leetcode.com/u/iammaaj/" 
+    },
     { text: "Internal Hackathon Winner - 1st place in Smart India Hackathon (2024)", icon: <Award size={20} /> },
     { text: "Google Cloud Storage Skill Badge (2024)", icon: <Cloud size={20} /> },
     { text: "AWS Cloud Technical Essentials (2025)", icon: <Cloud size={20} /> },
@@ -738,15 +728,34 @@ const Portfolio = () => {
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-4">
-                  {achievements.map((achievement, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 p-4 bg-purple-500/10 rounded-xl border border-purple-400/20 hover:border-purple-400/40 hover:scale-105 transition-all duration-300"
-                    >
-                      <div className="text-pink-400">{achievement.icon}</div>
-                      <p className="text-gray-300">{achievement.text}</p>
-                    </div>
-                  ))}
+                  {achievements.map((achievement, index) => {
+                    
+                    // Conditionally render as an <a> tag if a link is provided, otherwise render as a <div>
+                    const ItemWrapper = achievement.link ? 'a' : 'div';
+                    const linkProps = achievement.link ? { 
+                        href: achievement.link, 
+                        target: "_blank", 
+                        rel: "noopener noreferrer" 
+                    } : {};
+
+                    return (
+                        <ItemWrapper
+                            key={index}
+                            {...linkProps}
+                            className={`flex items-center gap-3 p-4 bg-purple-500/10 rounded-xl border border-purple-400/20 hover:border-purple-400/40 transition-all duration-300 ${
+                                achievement.link 
+                                    ? 'hover:scale-105 cursor-pointer hover:bg-purple-500/20' 
+                                    : ''
+                            }`}
+                        >
+                            <div className="text-pink-400">{achievement.icon}</div>
+                            <p className="text-gray-300">{achievement.text}</p>
+                            {achievement.link && (
+                                <ExternalLink size={16} className="text-pink-400 ml-auto" />
+                            )}
+                        </ItemWrapper>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -845,7 +854,7 @@ const Portfolio = () => {
           <p className="text-gray-400">
             © 2025 Maaj Bhadgaonkar. Crafted with{" "}
             <span className="text-pink-400 animate-pulse">♥</span> and{" "}
-            <span className="text-purple-400">Peace</span>
+            <span className="text-purple-400">React</span>
           </p>
         </div>
       </footer>
