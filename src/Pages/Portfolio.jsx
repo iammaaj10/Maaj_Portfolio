@@ -845,7 +845,7 @@ const Portfolio = () => {
           <p className="text-gray-400">
             © 2025 Maaj Bhadgaonkar. Crafted with{" "}
             <span className="text-pink-400 animate-pulse">♥</span> and{" "}
-            <span className="text-purple-400">React</span>
+            <span className="text-purple-400">Peace</span>
           </p>
         </div>
       </footer>
