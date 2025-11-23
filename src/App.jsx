@@ -455,34 +455,24 @@ const Portfolio = () => {
                 </span>
               </h1>
 
-              {/* === DYNAMIC 3D HERO ELEMENT (Holographic Core) === */}
-              <div className="py-10 flex justify-center transform perspective-[1000px] hover:scale-105 transition-transform duration-500">
+              {/* === REVERTED DATA CUBE WITH 'M' === */}
+              <div className="py-10 flex justify-center">
                 <div 
-                    className="relative w-48 h-48 flex items-center justify-center"
-                    style={{ 
-                        transformStyle: 'preserve-3d', 
-                        animation: 'rotate-3d-x 15s linear infinite', 
-                        borderRadius: '50%'
-                    }}
+                  className="w-40 h-40 border-4 border-lime-400/50 bg-gray-800/80 transform perspective-[1000px] flex items-center justify-center shadow-neon-xl"
+                  style={{ transformStyle: 'preserve-3d', animation: 'rotate-3d-x 15s linear infinite' }}
                 >
-                    {/* Outer Rotating Ring (Lime) */}
-                    <div className="absolute w-full h-full border-4 border-lime-400/80 rounded-full" 
-                         style={{ transform: 'rotateX(75deg) rotateY(0deg)', animation: 'spin 10s linear infinite' }}
-                    />
-                    {/* Middle Rotating Ring (Fuchsia) */}
-                    <div className="absolute w-40 h-40 border-4 border-fuchsia-400/80 rounded-full" 
-                         style={{ transform: 'rotateX(75deg) rotateY(90deg)', animation: 'spin 12s linear infinite reverse' }}
-                    />
-                    {/* Inner Pulsating Core */}
                     <div 
-                        className="w-20 h-20 bg-cyan-500/50 rounded-full flex items-center justify-center shadow-neon-xl"
-                        style={{ animation: 'pulse-core 2s infinite alternate' }}
+                        className="text-6xl font-extrabold text-lime-400 absolute z-10" 
+                        style={{ textShadow: '0 0 10px #a3e635' }}
                     >
-                        <Code size={32} className="text-lime-200" />
+                        M
                     </div>
+                    {/* Inner Cube Frame (Simulated 3D lines) */}
+                    <div className="absolute inset-0 border-lime-400/30 border-[1px] transform translateZ(20px)" />
+                    <div className="absolute inset-0 border-lime-400/30 border-[1px] transform translateZ(-20px)" />
                 </div>
               </div>
-              {/* ================================================= */}
+              {/* ==================================== */}
               
               <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed tracking-wider">
                 Crafting <span className="text-fuchsia-400 font-semibold text-shadow-neon-sm">modular solutions</span> in the Full Stack.
