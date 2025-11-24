@@ -790,9 +790,9 @@ const Portfolio = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   
                   {[
-                    { icon: <Mail size={24} />, title: "EMAIL", value: "bhadgaonkarmaaj@gmail.com", href: "mailto:bhadgaonkarmaaj@gmail.com" },
-                    { icon: <Phone size={24} />, title: "PHONE", value: "+91 8485878048", href: "tel:+918485878048" },
-                    { icon: <Linkedin size={24} />, title: "LINKEDIN", value: "CONNECT", href: "https://www.linkedin.com/in/maaj-bhadgaonkar-2025" },
+                    { icon: <Mail size={24} />, title: "EMAIL", value: "maajb1122@gmail.com", href: "mailto:maajb1122@gmail.com" },
+                    { icon: <Phone size={24} />, title: "PHONE", value: "+91 9130304068", href: "tel:+918485878048" },
+                    { icon: <Linkedin size={24} />, title: "LINKEDIN", value: "CONNECT", href: "https://www.linkedin.com/in/maaj-bhadgaonkar/" },
                     { icon: <Github size={24} />, title: "GITHUB", value: "VIEW CODE", href: "https://github.com/iammaaj10" },
                   ].map((item, index) => (
                     <a
