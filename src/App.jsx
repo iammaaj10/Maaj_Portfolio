@@ -252,6 +252,25 @@ const Portfolio = () => {
       icon: <Sparkles size={24} />,
       gradient: "from-fuchsia-400 to-lime-500" 
     },
+     {
+       title: "Recruitify AI",
+       subtitle: "AI-Powered Resume–JD Matching System",
+       year: "2025",
+       description: "Smart resume analysis platform that compares resumes with job descriptions using NLP-powered scoring, skill extraction, and personalized feedback.",
+       features: [
+        "AI-based resume–JD match score",
+        "Skill extraction (matched & missing)",
+        "NLP-powered text similarity",
+        "Personalized improvement feedback",
+        "Responsive modern UI"
+      ],
+  tech: ["React.js", "TypeScript", "Flask", "Python", "scikit-learn", "NLTK", "TailwindCSS"],
+  status: "GitHub",
+  link: "https://recruitify-ai.vercel.app/",
+  icon: <Sparkles size={24} />,
+  gradient: "from-purple-500 to-indigo-500"
+},
+
     {
       title: "Spotify Clone",
       subtitle: "Music Streaming Interface",
