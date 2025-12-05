@@ -265,7 +265,7 @@ const Portfolio = () => {
         "Responsive modern UI"
       ],
   tech: ["React.js", "TypeScript", "Flask", "Python", "scikit-learn", "NLTK", "TailwindCSS"],
-  status: "GitHub",
+  status: "Live Demo",
   link: "https://recruitify-ai.vercel.app/",
   icon: <Sparkles size={24} />,
   gradient: "from-purple-500 to-indigo-500"
