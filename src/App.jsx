@@ -270,6 +270,31 @@ const Portfolio = () => {
   icon: <Sparkles size={24} />,
   gradient: "from-purple-500 to-indigo-500"
 },
+    {
+  title: "RAG Chatbot",
+  subtitle: "Intelligent Document Q&A System",
+  year: "2025",
+  description: "Full-stack RAG (Retrieval-Augmented Generation) chatbot system with TF-IDF ranking that enables users to upload documents and ask contextual questions powered by Google Gemini AI.",
+  features: [
+    "TF-IDF document retrieval", 
+    "Cosine similarity ranking", 
+    "Real-time AI responses", 
+    "LocalStorage persistence",
+    "Multi-document support"
+  ],
+  tech: [
+    "React.js", 
+    "Node.js", 
+    "Express.js", 
+    "Google Gemini AI", 
+    "TailwindCSS", 
+    "Lucide Icons"
+  ],
+  status: "GitHub",
+  link: "https://github.com/iammaaj10/Rag-chatbot",
+  icon: <Bot size={24} />,
+  gradient: "from-purple-400 to-blue-500" 
+},
 
     {
       title: "Spotify Clone",
