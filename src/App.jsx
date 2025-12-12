@@ -21,6 +21,7 @@ import {
   ShoppingCart,
   TrendingUp,
   ChevronDown,
+  Bot,
 } from "lucide-react";
 
 // --- Custom Styles & Keyframes (MUST BE IN GLOBAL CSS/TAILWIND CONFIG) ---
