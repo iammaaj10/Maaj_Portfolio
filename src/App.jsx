@@ -579,7 +579,7 @@ const Portfolio = () => {
                     <div className="p-4 bg-gray-800 rounded-lg border-l-4 border-fuchsia-400 hover:border-fuchsia-300 transition-all">
                       <h4 className="font-semibold text-fuchsia-300 text-lg">B.Tech in Computer Science</h4>
                       <p className="text-gray-400 text-sm">DKTE Society's Textile and Engineering Institute</p>
-                      <p className="text-lime-300 font-semibold mt-2 text-xs">2023 – Present | CGPA: 8.25</p>
+                      <p className="text-lime-300 font-semibold mt-2 text-xs">2023 – Present | CGPA: 8.36</p>
                     </div>
                     
                     <div className="p-4 bg-gray-800 rounded-lg border-l-4 border-fuchsia-400 hover:border-fuchsia-300 transition-all">
