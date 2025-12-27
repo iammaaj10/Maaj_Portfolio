@@ -22,94 +22,165 @@ import {
   TrendingUp,
   ChevronDown,
   Bot,
+  Terminal,
+  Cpu,
+  Globe
 } from "lucide-react";
 
-// --- Custom Styles & Keyframes (MUST BE IN GLOBAL CSS/TAILWIND CONFIG) ---
-/*
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-3px, 3px); }
-    40% { transform: translate(-3px, -3px); }
-    60% { transform: translate(3px, 3px); }
-    80% { transform: translate(3px, -3px); }
-    100% { transform: translate(0); }
-}
-@keyframes matrix-scan {
-    0% { background-position: 0% 0%; }
-    100% { background-position: -100% -100%; }
-}
-@keyframes border-pulse {
-    0%, 100% { border-color: rgba(163, 230, 53, 0.5); transform: skewX(0deg); }
-    50% { border-color: rgba(232, 121, 220, 0.8); transform: skewX(5deg); }
-}
-@keyframes rotate-3d-x {
-    from { transform: rotateX(0deg) rotateY(0deg); }
-    to { transform: rotateX(360deg) rotateY(360deg); }
-}
-@keyframes pulse-core {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-}
-*/
+// --- Global Styles Injection (For standalone functionality) ---
+const GlobalStyles = () => (
+  <style>{`
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    @keyframes matrix-scan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 0% 100%; }
+    }
+    @keyframes border-pulse {
+      0%, 100% { border-color: rgba(163, 230, 53, 0.3); box-shadow: 0 0 5px rgba(163, 230, 53, 0.2); }
+      50% { border-color: rgba(232, 121, 220, 0.6); box-shadow: 0 0 15px rgba(232, 121, 220, 0.4); }
+    }
+    @keyframes scanline {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+    @keyframes rotate-3d-x {
+      from { transform: rotateX(0deg) rotateY(0deg); }
+      to { transform: rotateX(360deg) rotateY(360deg); }
+    }
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .text-shadow-neon {
+      text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    }
+    .animate-glitch {
+      animation: glitch 3s infinite;
+    }
+    .animate-pulse-slow {
+      animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    /* Hide scrollbar for cleaner look */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a; 
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4d7c0f; 
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a3e635; 
+    }
+  `}</style>
+);
 
 // --- Utility Components ---
 
-// Neon Grid Background (Parallax setup)
+// Typewriter Effect Component
+const Typewriter = ({ text, delay = 0, speed = 30 }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [started, setStarted] = useState(false);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setStarted(true);
+      }
+    }, { threshold: 0.1 });
+
+    if (elementRef.current) observer.observe(elementRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!started) return;
+    let i = 0;
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        setDisplayedText(text.substring(0, i + 1));
+        i++;
+        if (i === text.length) clearInterval(interval);
+      }, speed);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [started, text, delay, speed]);
+
+  return (
+    <span ref={elementRef}>
+      {displayedText}
+      <span className="inline-block w-2 h-5 bg-lime-400 ml-1 animate-[cursor-blink_1s_infinite]" />
+    </span>
+  );
+};
+
+// Neon Grid Background
 const NeonGridBackground = () => {
   const [offsetY, setOffsetY] = useState(0);
 
-  const handleScroll = () => setOffsetY(window.scrollY);
-
   useEffect(() => {
+    const handleScroll = () => setOffsetY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div 
-        className="fixed inset-0 pointer-events-none z-0 overflow-hidden" 
-        style={{ transform: `translateY(-${offsetY * 0.1}px)` }} // Subtle Parallax
+      className="fixed inset-0 pointer-events-none z-0 overflow-hidden" 
+      style={{ transform: `translateY(-${offsetY * 0.05}px)` }} 
     >
-        {/* Dark Grid Lines */}
-        <div 
-            className="absolute inset-0 opacity-10" 
-            style={{
-                backgroundImage: 'repeating-linear-gradient(0deg, #101010, #101010 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, #101010, #101010 1px, transparent 1px, transparent 20px)',
-                backgroundSize: '20px 20px'
-            }}
-        />
-        {/* Cyber Glow Spots */}
-        <div className="absolute top-[10%] left-[15%] w-64 h-64 bg-lime-400/20 rounded-full blur-[100px] animate-pulse-slow" />
-        <div className="absolute bottom-[20%] right-[10%] w-96 h-96 bg-fuchsia-400/20 rounded-full blur-[150px] animate-pulse-slow delay-1000" />
+      {/* Dark Grid Lines */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]" 
+        style={{
+          backgroundImage: 'linear-gradient(#3f3f46 1px, transparent 1px), linear-gradient(90deg, #3f3f46 1px, transparent 1px)',
+          backgroundSize: '30px 30px'
+        }}
+      />
+      
+      {/* Moving Scanline */}
+      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" 
+           style={{ background: 'linear-gradient(to bottom, transparent, #a3e635, transparent)', height: '100%', animation: 'scanline 8s linear infinite' }} />
+
+      {/* Cyber Glow Spots */}
+      <div className="absolute top-[10%] left-[15%] w-96 h-96 bg-lime-500/10 rounded-full blur-[120px] animate-pulse-slow" />
+      <div className="absolute bottom-[20%] right-[10%] w-96 h-96 bg-fuchsia-500/10 rounded-full blur-[120px] animate-pulse-slow delay-1000" />
     </div>
   );
 };
 
-// Animated Card Component (Used for section visibility - unchanged logic)
+// Animated Card Component
 const AnimatedCard = ({ children, delay = 0, className = "" }) => {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
   
-  const handleIntersection = useCallback(([entry]) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => setIsVisible(true), delay);
-    }
-  }, [delay]);
-
   useEffect(() => {
-    const observer = new IntersectionObserver(handleIntersection, { threshold: 0.1 });
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => setIsVisible(true), delay);
+      }
+    }, { threshold: 0.1 });
     
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
+    if (cardRef.current) observer.observe(cardRef.current);
     
     return () => observer.disconnect();
-  }, [handleIntersection]);
+  }, [delay]);
   
   return (
     <div
       ref={cardRef}
-      className={`transform transition-all duration-1000 ${
+      className={`transform transition-all duration-1000 ease-out ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
       } ${className}`}
     >
@@ -118,51 +189,35 @@ const AnimatedCard = ({ children, delay = 0, className = "" }) => {
   );
 };
 
-// --- System Bootup Intro Component (Matrix/Glitched Reveal) ---
-
+// --- System Bootup Intro Component ---
 const IntroSplash = ({ onAnimationEnd }) => {
-    const [typedText, setTypedText] = useState("");
-    const fullText = "> SYSTEM BOOTUP: ACCESS GRANTED. INITIATING UI...";
-    const indexRef = useRef(0);
+    const [typedText, setTypedText] = useState("");
+    const fullText = "> INITIALIZING MAAJ.DEV V3.0...";
 
-    useEffect(() => {
-        const typingInterval = setInterval(() => {
-            const currentI = indexRef.current; 
-
-            if (currentI < fullText.length) {
-                setTypedText(prev => prev + fullText[currentI]);
-                indexRef.current = currentI + 1; 
-            } else {
-                clearInterval(typingInterval);
-                setTimeout(onAnimationEnd, 1000); // Short delay before split
-            }
-        }, 50); // Fast matrix typing speed
-
-        return () => clearInterval(typingInterval);
-    }, [onAnimationEnd]);
+    useEffect(() => {
+        let i = 0;
+        const interval = setInterval(() => {
+            setTypedText(fullText.substring(0, i + 1));
+            i++;
+            if (i > fullText.length) {
+                clearInterval(interval);
+                setTimeout(onAnimationEnd, 800);
+            }
+        }, 50);
+        return () => clearInterval(interval);
+    }, [onAnimationEnd]);
     
     return (
-        <div className="fixed inset-0 z-[100] bg-gray-950 flex flex-col items-center justify-center space-y-4 font-mono">
-            {/* Matrix Background Effect (Simulated) */}
-            <div 
-                className="absolute inset-0 opacity-10" 
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ctext x='0' y='8' style='fill:rgb(0,255,0)'%3E1%3C/text%3E%3C/svg%3E")`,
-                    backgroundSize: '10px 10px',
-                    animation: 'matrix-scan 20s linear infinite'
-                }}
-            />
-            
-           <h1 className="text-2xl md:text-4xl text-lime-400 tracking-wider z-10">
-                {typedText}
-            </h1>
-            <p className="text-fuchsia-400 text-sm animate-pulse z-10">
-                // DATA STREAM ESTABLISHED
-            </p>
+        <div className="fixed inset-0 z-[100] bg-gray-950 flex flex-col items-center justify-center font-mono">
+            <h1 className="text-xl md:text-3xl text-lime-400 tracking-wider">
+                {typedText}<span className="animate-pulse">_</span>
+            </h1>
+            <div className="mt-4 w-64 h-1 bg-gray-800 rounded overflow-hidden">
+                <div className="h-full bg-fuchsia-500 animate-[width_2s_ease-out_forwards]" style={{ width: '100%' }} />
+            </div>
         </div>
     );
 };
-
 
 // --- Main Portfolio Component ---
 const Portfolio = () => {
@@ -178,14 +233,11 @@ const Portfolio = () => {
     setTimeout(() => {
       setIntroFinished(true);
       window.scrollTo(0, 0); 
-    }, 1500); 
+    }, 1000); 
   };
   
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
+    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
     const handleScroll = () => {
       setScrollY(window.scrollY);
       if (introFinished) { 
@@ -194,7 +246,7 @@ const Portfolio = () => {
           const element = document.getElementById(section);
           if (element) {
             const rect = element.getBoundingClientRect();
-            if (rect.top <= 100 && rect.bottom >= 100) { 
+            if (rect.top <= 200 && rect.bottom >= 200) { 
               setActiveSection(section);
               break;
             }
@@ -202,10 +254,8 @@ const Portfolio = () => {
         }
       }
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
@@ -214,137 +264,93 @@ const Portfolio = () => {
   
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
     setMobileMenuOpen(false);
   };
 
-  // --- Data (Unchanged) ---
+  // --- Data ---
+  const bioText = "I am a final-year Computer Science student at DKTE Society’s Textile & Engineering Institute, maintaining a strong academic record with a CGPA of 8.36. I am a passionate Full-Stack Developer with hands-on experience in building scalable, real-world applications using React, Next.js, Node.js, MongoDB, and modern UI frameworks. I have developed 5+ end-to-end projects, including real-time platforms with authentication, role-based access, live updates, and secure backend architectures. Currently, I am deepening my expertise in Next.js, system design fundamentals, and modern frontend–backend integration, while also exploring AI-integration, AI agents and AI-assisted features in web applications.";
+
   const skills = {
-    "Programming Languages": ["C", "C++", "Java", "Python", "JavaScript", "TypeScript", "SQL"],
-    "Web Development": ["HTML", "CSS", "React.js", "Node.js", "Express.js", "REST APIs","Next JS"],
-    "AI & ML": ["NLP basics", "Pandas", "NumPy", "Matplotlib"],
-    "Tools & Technologies": ["MongoDB", "PostgreSQL", "Git", "GitHub", "Figma", "Linux basics" ."Supabase" ],
+    "Core Stack": ["React.js", "Next.js", "Node.js", "Express.js", "MongoDB", "PostgreSQL"],
+    "Languages": ["JavaScript", "TypeScript", "Python", "Java", "C++", "SQL"],
+    "AI & Data": ["AI Agents", "Gemini API", "Pandas", "NumPy", "NLP Basics"],
+    "Tools & DevOps": ["Git", "GitHub", "Docker Basics", "Figma", "Linux", "Supabase"],
   };
 
   const projects = [
     {
       title: "MechHelp",
-      subtitle: "Online Mechanic Services",
+      subtitle: "Emergency Service Platform",
       year: "2025",
-      description: "MERN stack platform enabling users to discover and contact mechanics within 50km radius during vehicle breakdowns.",
-      features: ["Real-time geolocation", "Role-based dashboards", "Mechanic subscription system", "25+ mechanics tested"],
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "React Leaflet", "JWT"],
+      description: "MERN stack platform enabling users to discover and contact mechanics within a 50km radius during vehicle breakdowns.",
+      features: ["Real-time geolocation", "Role-based dashboards", "Subscription system"],
+      tech: ["React.js", "Node.js", "MongoDB", "Leaflet Maps"],
       status: "Live Demo",
       link: "https://mechhelp.vercel.app/",
       icon: <Zap size={24} />,
       gradient: "from-lime-400 to-cyan-500" 
     },
     {
+       title: "Recruitify AI",
+       subtitle: "AI Resume & JD Matcher",
+       year: "2025",
+       description: "Smart analysis platform comparing resumes with job descriptions using NLP-powered scoring and skill extraction.",
+       features: ["AI Match Score", "Skill Gap Analysis", "NLP Text Similarity"],
+       tech: ["React", "TypeScript", "Flask", "Python", "NLTK"],
+       status: "Live Demo",
+       link: "https://recruitify-ai.vercel.app/",
+       icon: <Brain size={24} />,
+       gradient: "from-purple-500 to-indigo-500"
+    },
+    {
       title: "NewsBlog",
-      subtitle: "AI-Powered News & Blogging Platform",
+      subtitle: "AI-Powered Media Platform",
       year: "2024",
-      description: "Full-stack web app combining online news services with community blogging and real-time social interactions.",
-      features: ["Daily news updates", "AI-based blog generation", "Real-time social features", "Socket.IO integration"],
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Socket.IO", "OpenAI/Gemini API"],
+      description: "Web app combining news services with community blogging and real-time social interactions.",
+      features: ["AI Blog Generation", "Real-time Chat", "Socket.IO"],
+      tech: ["React", "Node.js", "Socket.IO", "Gemini API"],
       status: "GitHub",
       link: "https://github.com/iammaaj10/newsBlogs",
-      icon: <Sparkles size={24} />,
+      icon: <Globe size={24} />,
       gradient: "from-fuchsia-400 to-lime-500" 
     },
-     {
-       title: "Recruitify AI",
-       subtitle: "AI-Powered Resume–JD Matching System",
-       year: "2025",
-       description: "Smart resume analysis platform that compares resumes with job descriptions using NLP-powered scoring, skill extraction, and personalized feedback.",
-       features: [
-        "AI-based resume–JD match score",
-        "Skill extraction (matched & missing)",
-        "NLP-powered text similarity",
-        "Personalized improvement feedback",
-        "Responsive modern UI"
-      ],
-  tech: ["React.js", "TypeScript", "Flask", "Python", "scikit-learn", "NLTK", "TailwindCSS"],
-  status: "Live Demo",
-  link: "https://recruitify-ai.vercel.app/",
-  icon: <Sparkles size={24} />,
-  gradient: "from-purple-500 to-indigo-500"
-},
     {
-  title: "RAG Chatbot",
-  subtitle: "Intelligent Document Q&A System",
-  year: "2025",
-  description: "Full-stack RAG (Retrieval-Augmented Generation) chatbot system with TF-IDF ranking that enables users to upload documents and ask contextual questions powered by Google Gemini AI.",
-  features: [
-    "TF-IDF document retrieval", 
-    "Cosine similarity ranking", 
-    "Real-time AI responses", 
-    "LocalStorage persistence",
-    "Multi-document support"
-  ],
-  tech: [
-    "React.js", 
-    "Node.js", 
-    "Express.js", 
-    "Google Gemini AI", 
-    "TailwindCSS", 
-    "Lucide Icons"
-  ],
-  status: "GitHub",
-  link: "https://github.com/iammaaj10/Rag-chatbot",
-  icon: <Bot size={24} />,
-  gradient: "from-purple-400 to-blue-500" 
-},
-
-    {
-      title: "Spotify Clone",
-      subtitle: "Music Streaming Interface",
-      year: "2024",
-      description: "Feature-rich Spotify clone built with React, replicating the popular music streaming platform's UI and core functionalities.",
-      features: ["Music player interface", "Playlist management", "Responsive design", "React components"],
-      tech: ["React.js", "CSS3", "JavaScript", "REST APIs"],
+      title: "RAG Chatbot",
+      subtitle: "Document Q&A System",
+      year: "2025",
+      description: "Intelligent chatbot using TF-IDF ranking to answer questions based on uploaded documents.",
+      features: ["TF-IDF Retrieval", "Contextual Answers", "Document Parsing"],
+      tech: ["React", "Node.js", "Gemini AI", "Tailwind"],
       status: "GitHub",
-      link: "https://github.com/iammaaj10/Spotify_Clone_react.git",
-      icon: <Music size={24} />,
-      gradient: "from-cyan-400 to-fuchsia-500" 
+      link: "https://github.com/iammaaj10/Rag-chatbot",
+      icon: <Bot size={24} />,
+      gradient: "from-purple-400 to-blue-500" 
     },
     {
-      title: "AI UI Generator",
-      subtitle: "Intelligent Interface Designer",
-      year: "2024",
-      description: "AI-powered tool that generates modern user interfaces based on natural language descriptions and requirements.",
-      features: ["Natural language processing", "Component generation", "Modern UI patterns", "Export functionality"],
-      tech: ["React.js", "AI/ML APIs", "Tailwind CSS", "JavaScript"],
-      status: "GitHub",
-      link: "https://github.com/iammaaj10/AI_UI.git",
-      icon: <Brain size={24} />,
-      gradient: "from-fuchsia-500 to-lime-500" 
-    },
-    {
-      title: "E-Commerce Platform",
-      subtitle: "Full-Stack Shopping Solution",
-      year: "2024",
-      description: "Complete e-commerce platform with product management, shopping cart, and secure checkout functionality.",
-      features: ["Product catalog", "Shopping cart", "User authentication", "Payment integration"],
-      tech: ["React.js", "Node.js", "MongoDB", "Express.js", "Stripe API"],
-      status: "GitHub",
-      link: "https://github.com/iammaaj10/ecommerce.git",
-      icon: <ShoppingCart size={24} />,
-      gradient: "from-cyan-600 to-lime-700" 
-    },
-    {
-      title: "Gold Price Prediction",
-      subtitle: "ML-Based Financial Forecasting",
-      year: "2024",
-      description: "Machine learning model that predicts gold prices using historical data and various economic indicators.",
-      features: ["Time series analysis", "ML algorithms", "Data visualization", "Prediction accuracy metrics"],
-      tech: ["Python", "Pandas", "NumPy", "Scikit-learn", "Matplotlib"],
-      status: "GitHub",
-      link: "https://github.com/iammaaj10/GoldPricePrediction.git",
-      icon: <TrendingUp size={24} />,
-      gradient: "from-lime-400 to-fuchsia-500" 
-    },
+        title: "AI UI Generator",
+        subtitle: "Generative Interface Tool",
+        year: "2024",
+        description: "AI-powered tool that generates modern user interfaces based on natural language descriptions.",
+        features: ["NLP to UI", "Tailwind Generation", "Live Preview"],
+        tech: ["React", "AI APIs", "Tailwind CSS"],
+        status: "GitHub",
+        link: "https://github.com/iammaaj10/AI_UI.git",
+        icon: <Cpu size={24} />,
+        gradient: "from-fuchsia-500 to-lime-500" 
+      },
+      {
+        title: "Gold Price Predictor",
+        subtitle: "ML Financial Forecasting",
+        year: "2024",
+        description: "Machine learning model that predicts gold prices using historical data and economic indicators.",
+        features: ["Time Series Analysis", "Data Visualization", "Scikit-Learn"],
+        tech: ["Python", "Pandas", "Matplotlib", "ML"],
+        status: "GitHub",
+        link: "https://github.com/iammaaj10/GoldPricePrediction.git",
+        icon: <TrendingUp size={24} />,
+        gradient: "from-lime-400 to-fuchsia-500" 
+      },
   ];
 
   const experience = [
@@ -362,516 +368,368 @@ const Portfolio = () => {
       description: "Created authentication APIs including login, registration, and token handling as a backend developer.",
       icon: <Database size={20} />,
     },
-    {
-      title: "Python Training",
-      company: "Malleable Softwares Pvt",
-      period: "May 2022 – Jul 2022",
-      description: "Completed comprehensive Python development training covering fundamental concepts and core programming constructs.",
-      icon: <Cloud size={20} />,
-    },
   ];
 
   const achievements = [
-    { 
-        text: "Solved 350+ coding problems on LeetCode", 
-        icon: <Star size={20} />, 
-        link: "https://leetcode.com/u/iammaaj/" 
-    },
-    { text: "Internal Hackathon Winner - 1st place in Smart India Hackathon (2024)", icon: <Award size={20} /> },
+    { text: "Solved 350+ coding problems on LeetCode", icon: <Star size={20} />, link: "https://leetcode.com/u/iammaaj/" },
+    { text: "Winner - 1st place in Smart India Hackathon (Internal 2024)", icon: <Award size={20} /> },
     { text: "Google Cloud Storage Skill Badge (2024)", icon: <Cloud size={20} /> },
     { text: "AWS Cloud Technical Essentials (2025)", icon: <Cloud size={20} /> },
-    { text: "State Level Selection - MSBTE project competition (2023)", icon: <Star size={20} /> },
   ];
 
   if (!introFinished) {
     return (
       <>
+        <GlobalStyles />
         {!showPortfolio && <IntroSplash onAnimationEnd={handleIntroEnd} />}
-
-        <div className="fixed inset-0 overflow-hidden">
-          {/* Top Half (Dark Cyberpunk Gray) */}
-          <div 
-            className={`fixed top-0 left-0 right-0 h-1/2 bg-gray-950 transition-all duration-1500 ease-in-out z-[90] ${
-              showPortfolio ? '-translate-y-full' : 'translate-y-0'
-            }`}
-          />
-          {/* Bottom Half (Dark Cyberpunk Gray) */}
-          <div 
-            className={`fixed bottom-0 left-0 right-0 h-1/2 bg-gray-950 transition-all duration-1500 ease-in-out z-[90] ${
-              showPortfolio ? 'translate-y-full' : 'translate-y-0'
-            }`}
-          />
-        </div>
+        <div className={`fixed inset-0 bg-gray-950 transition-transform duration-1000 ease-in-out z-[90] ${showPortfolio ? '-translate-y-full' : 'translate-y-0'}`} />
       </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden overflow-y-auto relative font-mono">
-      
-      {/* Neon Grid Background (Parallax Enabled) */}
+    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden relative font-mono selection:bg-lime-400 selection:text-black">
+      <GlobalStyles />
       <NeonGridBackground />
 
       {/* Mouse Follower Glow */}
       <div
-        className="fixed w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none z-0 transition-all duration-300"
+        className="fixed w-[500px] h-[500px] rounded-full opacity-15 blur-[80px] pointer-events-none z-0 transition-transform duration-100 ease-out"
         style={{
-          background: "radial-gradient(circle, rgba(163,230,53,0.4) 0%, rgba(232,121,220,0.2) 50%, transparent 70%)", // Lime/Fuchsia glow
-          left: mousePosition.x - 192,
-          top: mousePosition.y - 192,
-          transform: `scale(${1 + Math.sin(scrollY * 0.005) * 0.2})`
+          background: "radial-gradient(circle, rgba(163,230,53,0.3) 0%, rgba(232,121,220,0.1) 50%, transparent 70%)",
+          left: mousePosition.x - 250,
+          top: mousePosition.y - 250,
         }}
       />
 
-      {/* Navigation (Transparent Black HUD) */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-md border-b border-lime-500/30">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold">
-              <span className="text-lime-400 tracking-widest text-shadow-neon animate-glitch">
-                MAAJ.DEV
-              </span>
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/10">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="text-xl font-bold tracking-widest text-lime-400 hover:text-white transition-colors cursor-pointer">
+              MAAJ<span className="text-fuchsia-400">.DEV</span>
             </div>
             
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-lime-400">
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-            
-            {/* Desktop Menu Links */}
-            <div className="hidden md:flex space-x-6">
+            {/* Desktop Menu */}
+            <div className="hidden md:flex space-x-8">
               {["Home", "About", "Projects", "Experience", "Contact"].map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollToSection(item.toLowerCase())}
-                  className={`relative px-4 py-2 transition-all duration-300 text-sm tracking-widest ${
-                    activeSection === item.toLowerCase() ? "text-fuchsia-400 border-b border-fuchsia-400" : "text-white hover:text-lime-400"
+                  className={`text-xs tracking-[0.2em] transition-all hover:text-lime-400 ${
+                    activeSection === item.toLowerCase() ? "text-fuchsia-400 scale-105" : "text-gray-400"
                   }`}
                 >
                   {item.toUpperCase()}
-                  {activeSection === item.toLowerCase() && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-fuchsia-400 to-lime-400 shadow-neon-sm" />
-                  )}
                 </button>
               ))}
             </div>
-          </div>
+
+            {/* Mobile Menu Toggle */}
+            <div className="md:hidden text-lime-400" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                {mobileMenuOpen ? <X /> : <Menu />}
+            </div>
         </div>
         
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-black/80 backdrop-blur-xl border-t border-fuchsia-500/20 py-4 absolute w-full top-full">
-            <div className="container mx-auto px-6 flex flex-col space-y-4">
-              {["Home", "About", "Projects", "Experience", "Contact"].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => scrollToSection(item.toLowerCase())}
-                  className="text-left py-2 px-4 rounded-lg hover:bg-fuchsia-500/20 transition-all text-lime-400 tracking-widest"
-                >
-                  {item.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
+             <div className="md:hidden bg-black/90 backdrop-blur-xl border-b border-lime-500/20 py-4 absolute w-full">
+               {["Home", "About", "Projects", "Experience", "Contact"].map((item) => (
+                 <button
+                   key={item}
+                   onClick={() => scrollToSection(item.toLowerCase())}
+                   className="block w-full text-left py-3 px-8 text-sm tracking-widest text-gray-300 hover:bg-white/5 hover:text-lime-400"
+                 >
+                   {item.toUpperCase()}
+                 </button>
+               ))}
+             </div>
         )}
       </nav>
 
       {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative pt-20">
-        <div className="container mx-auto px-6 text-center relative z-20">
+        <div className="container mx-auto px-6 text-center relative z-10">
           <AnimatedCard>
-            <div className="space-y-8">
-              <div className="flex items-center justify-center gap-3 text-lime-400 text-xl tracking-widest text-shadow-neon">
-                <Sparkles className="animate-pulse" />
-                <span className="animate-glitch">CYBER.PORTFOLIO // V3.0 ONLINE</span>
-                <Sparkles className="animate-pulse" />
-              </div>
-              
-              <h1 className="text-6xl md:text-8xl font-bold uppercase" style={{ textShadow: '0 0 10px #e879f9' }}>
-                <span className="bg-gradient-to-r from-white via-lime-200 to-fuchsia-400 bg-clip-text text-transparent animate-glitch-text">
-                  FULL-STACK
+             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-lime-500/30 bg-lime-500/5 mb-8">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-lime-500"></span>
                 </span>
-                <br />
-                <span className="text-5xl md:text-7xl text-fuchsia-400 tracking-tighter">
-                  DEVELOPER
-                </span>
-              </h1>
+                <span className="text-xs text-lime-300 tracking-widest">SYSTEM ONLINE</span>
+             </div>
 
-              {/* === REVERTED DATA CUBE WITH 'M' === */}
-              <div className="py-10 flex justify-center">
-                <div 
-                  className="w-40 h-40 border-4 border-lime-400/50 bg-gray-800/80 transform perspective-[1000px] flex items-center justify-center shadow-neon-xl"
-                  style={{ transformStyle: 'preserve-3d', animation: 'rotate-3d-x 15s linear infinite' }}
-                >
-                    <div 
-                        className="text-6xl font-extrabold text-lime-400 absolute z-10" 
-                        style={{ textShadow: '0 0 10px #a3e635' }}
-                    >
-                        M
+            <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tighter">
+              FULL-STACK <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-white to-fuchsia-400 animate-pulse-slow">
+                DEVELOPER
+              </span>
+            </h1>
+
+            {/* 3D Cube Logo */}
+             <div className="py-12 flex justify-center perspective-[1000px]">
+                <div className="relative w-32 h-32 transform-style-3d animate-[rotate-3d-x_12s_linear_infinite]">
+                    <div className="absolute inset-0 border-2 border-lime-400/40 bg-black/20 translate-z-[4rem]"></div>
+                    <div className="absolute inset-0 border-2 border-fuchsia-400/40 bg-black/20 translate-z-[-4rem]"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-5xl font-bold text-white drop-shadow-[0_0_15px_rgba(163,230,53,0.8)]">M</span>
                     </div>
-                    {/* Inner Cube Frame (Simulated 3D lines) */}
-                    <div className="absolute inset-0 border-lime-400/30 border-[1px] transform translateZ(20px)" />
-                    <div className="absolute inset-0 border-lime-400/30 border-[1px] transform translateZ(-20px)" />
                 </div>
-              </div>
-              {/* ==================================== */}
-              
-              <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed tracking-wider">
-                Crafting <span className="text-fuchsia-400 font-semibold text-shadow-neon-sm">modular solutions</span> in the Full Stack.
-                <br />
-                <span className="text-lime-400 font-semibold">CODE READY // EXPERIENCE INJECTED</span>
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-                <a
-                  href="https://drive.google.com/uc?export=download&id=16I8cbf-MGro3UMrFXAoBQSb9v2JpOEse"
-                  className="group relative px-8 py-4 bg-fuchsia-600 rounded-lg font-semibold text-lg transition-all duration-300 hover:scale-110 hover:shadow-neon-lg overflow-hidden border border-fuchsia-400"
-                >
-                  <span className="relative z-10 flex items-center gap-2 text-white">
-                    <Download size={20} className="text-lime-200" />
-                    DOWNLOAD SPEC SHEET
-                  </span>
-                </a>
-                
-                <button
-                  onClick={() => scrollToSection("projects")}
-                  className="px-8 py-4 border-2 border-lime-400 text-lime-400 rounded-lg font-semibold text-lg hover:bg-lime-400/20 transition-all duration-300 hover:scale-110 text-shadow-neon"
-                >
-                  VIEW PROJECTS LOG
-                </button>
-              </div>
+             </div>
+
+            <p className="text-gray-400 max-w-xl mx-auto text-lg mb-10 leading-relaxed">
+               Building scalable, futuristic applications with <span className="text-lime-400">Next.js</span> and <span className="text-fuchsia-400">AI Agents</span>.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="https://drive.google.com/uc?export=download&id=16I8cbf-MGro3UMrFXAoBQSb9v2JpOEse" className="px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded font-bold transition-all hover:scale-105 flex items-center justify-center gap-2">
+                <Download size={18} /> DOWNLOAD CV
+              </a>
+              <button onClick={() => scrollToSection("projects")} className="px-8 py-3 border border-lime-400 text-lime-400 hover:bg-lime-400/10 rounded font-bold transition-all hover:scale-105">
+                VIEW WORK
+              </button>
             </div>
           </AnimatedCard>
         </div>
         
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <ChevronDown size={32} className="text-lime-400 text-shadow-neon" />
+        <div className="absolute bottom-10 animate-bounce">
+            <ChevronDown className="text-gray-500" />
         </div>
       </section>
 
-      {/* About Section (Floating Data Blocks) */}
-      <section id="about" className="py-20 relative z-10">
+      {/* About Section */}
+      <section id="about" className="py-24 relative">
         <div className="container mx-auto px-6">
           <AnimatedCard>
-            <h2 className="text-4xl font-bold text-center mb-16 uppercase text-fuchsia-400 text-shadow-neon">
-              // CORE DATA //
+            <h2 className="text-3xl font-bold mb-16 flex items-center gap-4">
+               <span className="text-lime-400">01.</span> 
+               <span>ABOUT_ME</span>
+               <div className="h-px bg-gray-800 flex-grow ml-4"></div>
             </h2>
           </AnimatedCard>
-          
-          <div className="grid md:grid-cols-2 gap-12">
-            <AnimatedCard delay={200}>
-              <div className="space-y-6">
-                {/* Data Block 1: Education (Dynamic Border) */}
-                <div 
-                    className="bg-black/70 backdrop-blur-sm rounded-xl p-8 border-t-4 border-l-4 border-lime-500/50 shadow-neon-md hover:border-lime-400 transition-all duration-300"
-                    style={{ animation: 'border-pulse 4s infinite alternate' }} // Dynamic border
-                >
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-lime-400/20 border border-lime-400 rounded-md flex items-center justify-center shadow-neon-sm">
-                      <Code size={24} className="text-lime-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-lime-400 tracking-wider">EDUCATION_PATH</h3>
-                  </div>
-                  
+
+          {/* New Bio Section - Terminal Style */}
+          <AnimatedCard delay={100} className="mb-12">
+            <div className="bg-black/40 backdrop-blur-md border-l-4 border-lime-400 rounded-r-lg p-6 md:p-10 relative overflow-hidden group">
+               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-lime-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+               
+               <div className="flex items-start gap-4 relative z-10">
+                  <Terminal className="text-lime-400 mt-1 flex-shrink-0" size={28} />
                   <div className="space-y-4">
-                    <div className="p-4 bg-gray-800 rounded-lg border-l-4 border-fuchsia-400 hover:border-fuchsia-300 transition-all">
-                      <h4 className="font-semibold text-fuchsia-300 text-lg">B.Tech in Computer Science</h4>
-                      <p className="text-gray-400 text-sm">DKTE Society's Textile and Engineering Institute</p>
-                      <p className="text-lime-300 font-semibold mt-2 text-xs">2023 – Present | CGPA: 8.36</p>
-                    </div>
-                    
-                    <div className="p-4 bg-gray-800 rounded-lg border-l-4 border-fuchsia-400 hover:border-fuchsia-300 transition-all">
-                      <h4 className="font-semibold text-fuchsia-300 text-lg">Diploma in Computer Engineering</h4>
-                      <p className="text-gray-400 text-sm">Sant Gajanan Maharaj Rural Polytechnic</p>
-                      <p className="text-lime-300 font-semibold mt-2 text-xs">2020 – 2023 | 89.09%</p>
-                    </div>
+                     <h3 className="text-xl text-white font-bold tracking-wide">MISSION PROFILE</h3>
+                     <div className="text-gray-300 leading-relaxed text-md md:text-lg font-light">
+                        <Typewriter text={bioText} speed={15} />
+                     </div>
                   </div>
-                </div>
-                
-                {/* Data Block 2: Location (Dynamic Border) */}
-                <div 
-                    className="bg-black/70 backdrop-blur-sm rounded-xl p-8 border-b-4 border-r-4 border-lime-500/50 shadow-neon-md hover:border-lime-400 transition-all duration-300"
-                    style={{ animation: 'border-pulse 4s infinite alternate reverse' }} // Dynamic border
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-lime-400/20 border border-lime-400 rounded-md flex items-center justify-center shadow-neon-sm">
-                      <MapPin size={24} className="text-lime-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-lime-400 tracking-wider">LOCATION_TRACK</h3>
-                  </div>
-                  <p className="text-fuchsia-300 font-semibold text-lg">Kolhapur, Maharashtra, India</p>
-                </div>
-              </div>
-            </AnimatedCard>
-            
-            <AnimatedCard delay={400}>
-              {/* Data Block 3: Skills (Dynamic Border) */}
-              <div 
-                    className="bg-black/70 backdrop-blur-sm rounded-xl p-8 border-t-4 border-r-4 border-fuchsia-500/50 shadow-neon-md hover:border-fuchsia-400 transition-all duration-300 h-full"
-                    style={{ animation: 'border-pulse 4s infinite alternate' }} // Dynamic border
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-fuchsia-400/20 border border-fuchsia-400 rounded-md flex items-center justify-center shadow-neon-sm">
-                    <Database size={24} className="text-fuchsia-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-fuchsia-400 tracking-wider">TECHNICAL_MATRIX</h3>
-                </div>
-                
-                <div className="space-y-6">
-                  {Object.entries(skills).map(([category, skillList]) => (
-                    <div key={category} className="p-4 bg-gray-800 rounded-lg border-l-4 border-lime-400">
-                      <h4 className="font-semibold text-lime-300 mb-3 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
-                        {category.toUpperCase()}
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {skillList.map((skill) => (
-                          <span
-                            key={skill}
-                            className="bg-gray-700/50 text-cyan-300 px-3 py-1 rounded-full text-xs border border-cyan-400/50 hover:bg-cyan-900 transition-all duration-300 cursor-pointer"
-                          >
-                            {skill}
-                          </span>
-                        ))}
+               </div>
+            </div>
+          </AnimatedCard>
+
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+             {/* Left Column: Education & Location */}
+             <div className="space-y-8">
+                <AnimatedCard delay={200}>
+                   <div className="p-6 bg-gray-900/50 rounded-xl border border-white/5 hover:border-fuchsia-500/50 transition-colors">
+                      <div className="flex items-center gap-3 mb-6">
+                         <div className="p-2 bg-fuchsia-500/20 rounded text-fuchsia-400"><Code size={20} /></div>
+                         <h3 className="text-xl font-bold">EDUCATION</h3>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </AnimatedCard>
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section (Data Fragment Cards) */}
-      <section id="projects" className="py-20 relative z-10">
-        <div className="container mx-auto px-6">
-          <AnimatedCard>
-            <h2 className="text-4xl font-bold text-center mb-16 uppercase text-lime-400 text-shadow-neon">
-              // PROJECT LOGS //
-            </h2>
-          </AnimatedCard>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <AnimatedCard key={index} delay={index * 100}>
-                {/* Data Fragment Card (Dynamic Border + Hover Skew) */}
-                <div 
-                    className="bg-black/70 backdrop-blur-sm rounded-xl p-6 border-2 border-fuchsia-500/30 shadow-neon-sm transition-all duration-500 group h-full flex flex-col relative overflow-hidden hover:scale-[1.03] hover:shadow-neon-lg hover:skew-x-1"
-                    style={{ animation: 'border-pulse 5s infinite alternate reverse' }} // Dynamic border
-                >
-                    {/* Corner Accent */}
-                    <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-lime-400/50 group-hover:border-fuchsia-400 transition-colors" />
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-10 h-10 bg-gradient-to-r ${project.gradient} rounded-md flex items-center justify-center shadow-neon-sm`}>
-                      {project.icon}
-                    </div>
-                    <span className="text-xs text-gray-400 bg-gray-800 px-3 py-1 border border-lime-400/30">
-                      {project.year} | {project.status.toUpperCase()}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold text-fuchsia-400 mb-1 tracking-wider">{project.title.toUpperCase()}</h3>
-                  <h4 className="text-md text-lime-300 mb-4 font-semibold">{project.subtitle}</h4>
-                  <p className="text-gray-400 text-sm mb-6 leading-relaxed flex-grow">{project.description}</p>
-                  
-                  <div className="space-y-4">
-                    <div className="p-3 bg-gray-800 rounded-lg border-l-4 border-cyan-400/50">
-                      <h5 className="font-semibold text-cyan-300 mb-1 flex items-center gap-2 text-xs">
-                        <Star size={14} />
-                        FEATURES:
-                      </h5>
-                      <ul className="space-y-0.5">
-                        {project.features.slice(0, 2).map((feature, i) => (
-                          <li key={i} className="text-xs text-gray-400 flex items-center gap-2">
-                            <span className="w-1 h-1 bg-fuchsia-400 rounded-full" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-1">
-                      {project.tech.slice(0, 4).map((tech) => (
-                        <span key={tech} className="text-xs bg-gray-700/50 text-cyan-300 px-2 py-0.5 rounded border border-cyan-400/30">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-2 bg-fuchsia-600 rounded-lg font-semibold text-sm hover:bg-lime-600 transition-all duration-300 hover:scale-[1.01] text-white tracking-widest"
-                    >
-                      {project.status === "Live Demo" ? <ExternalLink size={16} /> : <Github size={16} />}
-                      ACCESS DATA
-                    </a>
-                  </div>
-                </div>
-              </AnimatedCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section (Timeline/Command Log) */}
-      <section id="experience" className="py-20 relative z-10">
-        <div className="container mx-auto px-6">
-          <AnimatedCard>
-            <h2 className="text-4xl font-bold text-center mb-16 uppercase text-fuchsia-400 text-shadow-neon">
-              // COMMAND LOG //
-            </h2>
-          </AnimatedCard>
-          
-          <div className="max-w-4xl mx-auto relative">
-            {/* Timeline Bar (Neon) */}
-            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-lime-400 via-cyan-400 to-fuchsia-400 shadow-neon-lg" />
-            
-            <div className="space-y-8">
-              {experience.map((exp, index) => (
-                <AnimatedCard key={index} delay={index * 200}>
-                  <div className="relative pl-12">
-                    <div className="absolute left-0 w-8 h-8 bg-gray-900 border-2 border-fuchsia-400 rounded-full flex items-center justify-center shadow-neon-sm animate-pulse">
-                      {exp.icon}
-                    </div>
-                    
-                    {/* Log Entry Panel (Dynamic Border) */}
-                    <div 
-                        className="bg-black/70 backdrop-blur-sm rounded-lg p-6 border-l-4 border-fuchsia-400 transition-all duration-300 hover:scale-[1.01]"
-                        style={{ animation: 'border-pulse 3s infinite alternate' }} // Dynamic border
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
-                        <div>
-                          <h3 className="text-xl font-bold text-lime-400 tracking-wider">{exp.title.toUpperCase()}</h3>
-                          <h4 className="text-md text-fuchsia-300 font-semibold">{exp.company}</h4>
+                      <div className="space-y-6">
+                        <div className="relative pl-6 border-l border-gray-700">
+                           <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 bg-fuchsia-500 rounded-full"></div>
+                           <h4 className="text-lg font-semibold text-white">B.Tech in Computer Science</h4>
+                           <p className="text-sm text-gray-400">DKTE Society's Textile & Engineering Institute</p>
+                           <p className="text-xs text-lime-400 mt-1 font-mono">2023 – Present | CGPA: 8.36</p>
                         </div>
-                        <span className="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-lime-400/30 mt-2 md:mt-0 inline-block">
-                        {exp.period}
-                        </span>
+                        <div className="relative pl-6 border-l border-gray-700">
+                           <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 bg-gray-600 rounded-full"></div>
+                           <h4 className="text-lg font-semibold text-white">Diploma in Computer Engineering</h4>
+                           <p className="text-sm text-gray-400">Sant Gajanan Maharaj Rural Polytechnic</p>
+                           <p className="text-xs text-lime-400 mt-1 font-mono">2020 – 2023 | 89.09%</p>
+                        </div>
                       </div>
-                      <p className="text-gray-400 text-sm leading-relaxed">{exp.description}</p>
-                    </div>
-                  </div>
+                   </div>
                 </AnimatedCard>
-              ))}
-            </div>
-          </div>
-          
-          {/* Achievements (System Alerts) */}
-          <AnimatedCard delay={600}>
-            <div className="mt-16 max-w-4xl mx-auto">
-              {/* Achievements Container (Dynamic Border) */}
-              <div 
-                  className="bg-black/70 backdrop-blur-sm rounded-xl p-8 border-4 border-lime-400/50 shadow-neon-lg"
-                  style={{ animation: 'border-pulse 5s infinite alternate reverse' }} // Dynamic border
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-lime-400/20 border border-lime-400 rounded-md flex items-center justify-center shadow-neon-sm">
-                    <Award size={24} className="text-lime-400" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-lime-400 tracking-wider">SYSTEM_ALERTS (ACHIEVEMENTS)</h3>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4">
-                  {achievements.map((achievement, index) => {
-                    
-                    const ItemWrapper = achievement.link ? 'a' : 'div';
-                    const linkProps = achievement.link ? { 
-                        href: achievement.link, 
-                        target: "_blank", 
-                        rel: "noopener noreferrer" 
-                    } : {};
 
-                    return (
-                        <ItemWrapper
-                            key={index}
-                            {...linkProps}
-                            className={`flex items-center gap-3 p-4 bg-gray-800 rounded-lg border-l-4 border-cyan-400/50 transition-all duration-300 ${
-                                achievement.link 
-                                    ? 'hover:scale-[1.02] cursor-pointer hover:border-fuchsia-400' 
-                                    : ''
-                            }`}
-                        >
-                            <div className="text-fuchsia-400">{achievement.icon}</div>
-                            <p className="text-gray-300 text-sm">{achievement.text}</p>
-                            {achievement.link && (
-                                <ExternalLink size={16} className="text-lime-400 ml-auto" />
-                            )}
-                        </ItemWrapper>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </AnimatedCard>
-        </div>
-      </section>
-
-      {/* Contact Section (Terminal Interface) */}
-      <section id="contact" className="py-20 relative z-10">
-        <div className="container mx-auto px-6">
-          <AnimatedCard>
-            <h2 className="text-4xl font-bold text-center mb-16 uppercase text-fuchsia-400 text-shadow-neon">
-              // CONTACT_INTERFACE //
-            </h2>
-          </AnimatedCard>
-          
-          <div className="max-w-4xl mx-auto">
-            <AnimatedCard delay={200}>
-              {/* Contact Container (Dynamic Border) */}
-              <div 
-                  className="bg-black/80 backdrop-blur-sm rounded-xl p-8 border-2 border-lime-400/50 shadow-neon-lg"
-                  style={{ animation: 'border-pulse 4s infinite alternate' }} // Dynamic border
-              >
-                <p className="text-center text-gray-300 text-lg mb-8 leading-relaxed">
-                  <span className="text-lime-400">STATUS: READY.</span> Enter command to establish communication link.
-                </p>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  
-                  {[
-                    { icon: <Mail size={24} />, title: "EMAIL", value: "maajb1122@gmail.com", href: "mailto:maajb1122@gmail.com" },
-                    { icon: <Phone size={24} />, title: "PHONE", value: "+91 9130304068", href: "tel:+918485878048" },
-                    { icon: <Linkedin size={24} />, title: "LINKEDIN", value: "CONNECT", href: "https://www.linkedin.com/in/maaj-bhadgaonkar/" },
-                    { icon: <Github size={24} />, title: "GITHUB", value: "VIEW CODE", href: "https://github.com/iammaaj10" },
-                  ].map((item, index) => (
-                    <a
-                      key={index}
-                      href={item.href}
-                      target={item.href.startsWith('http') ? "_blank" : "_self"}
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-6 bg-gray-900 rounded-lg border-l-4 border-fuchsia-400 hover:border-lime-400 transition-all duration-300 group shadow-lg shadow-fuchsia-900/50 hover:scale-[1.02]"
-                    >
-                      <div className="w-12 h-12 bg-lime-400/20 border border-lime-400 rounded-md flex items-center justify-center group-hover:bg-fuchsia-400/20 transition-transform shadow-neon-sm">
-                        {item.icon}
-                      </div>
+                <AnimatedCard delay={300}>
+                   <div className="p-6 bg-gray-900/50 rounded-xl border border-white/5 flex items-center gap-4">
+                      <div className="p-3 bg-lime-500/20 rounded-full text-lime-400"><MapPin size={24} /></div>
                       <div>
-                        <h4 className="font-semibold text-lime-300 tracking-widest">{item.title}</h4>
-                        <p className="text-fuchsia-400 text-sm">{item.value}</p>
+                         <h4 className="text-sm text-gray-400 tracking-wider">BASE LOCATION</h4>
+                         <p className="text-xl font-bold text-white">Kolhapur, India</p>
                       </div>
-                    </a>
-                  ))}
+                   </div>
+                </AnimatedCard>
+             </div>
+
+             {/* Right Column: Skills */}
+             <AnimatedCard delay={400}>
+                <div className="h-full p-6 bg-gray-900/50 rounded-xl border border-white/5 hover:border-lime-500/50 transition-colors">
+                   <div className="flex items-center gap-3 mb-6">
+                      <div className="p-2 bg-lime-500/20 rounded text-lime-400"><Database size={20} /></div>
+                      <h3 className="text-xl font-bold">TECH_STACK</h3>
+                   </div>
+                   <div className="space-y-6">
+                      {Object.entries(skills).map(([category, items], idx) => (
+                         <div key={idx}>
+                            <h4 className="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">{category}</h4>
+                            <div className="flex flex-wrap gap-2">
+                               {items.map((skill) => (
+                                  <span key={skill} className="px-3 py-1 bg-gray-800 text-xs md:text-sm text-gray-300 rounded hover:bg-lime-400 hover:text-black transition-all cursor-default">
+                                     {skill}
+                                  </span>
+                               ))}
+                            </div>
+                         </div>
+                      ))}
+                   </div>
                 </div>
-              </div>
-            </AnimatedCard>
+             </AnimatedCard>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-fuchsia-500/30 relative z-10">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-400 text-xs tracking-widest">
-            (C) 2025 MAAJ BHADGAONKAR // DATA STREAM TERMINATED
-            <br />
-            <span className="text-lime-400 animate-pulse">SYSTEM ONLINE // NO ERRORS FOUND</span>
-          </p>
-        </div>
+      {/* Projects Section */}
+      <section id="projects" className="py-24 relative bg-black/20">
+         <div className="container mx-auto px-6">
+            <AnimatedCard>
+               <h2 className="text-3xl font-bold mb-16 flex items-center gap-4 justify-end">
+                  <div className="h-px bg-gray-800 flex-grow mr-4"></div>
+                  <span>PROJECT_LOGS</span>
+                  <span className="text-fuchsia-400">02.</span> 
+               </h2>
+            </AnimatedCard>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {projects.map((project, index) => (
+                  <AnimatedCard key={index} delay={index * 100}>
+                     <div className="group h-full bg-gray-900/40 border border-white/10 rounded-xl overflow-hidden hover:border-lime-500/50 transition-all duration-300 hover:-translate-y-2">
+                        {/* Top Gradient Bar */}
+                        <div className={`h-1 w-full bg-gradient-to-r ${project.gradient}`} />
+                        
+                        <div className="p-6 flex flex-col h-full">
+                           <div className="flex justify-between items-start mb-4">
+                              <div className={`p-3 rounded-lg bg-gray-800 text-white group-hover:text-lime-400 transition-colors`}>
+                                 {project.icon}
+                              </div>
+                              <div className="flex gap-2">
+                                 {project.status === "Live Demo" && <ExternalLink size={16} className="text-gray-500 hover:text-white cursor-pointer" />}
+                                 <Github size={16} className="text-gray-500 hover:text-white cursor-pointer" />
+                              </div>
+                           </div>
+                           
+                           <h3 className="text-xl font-bold text-white mb-1 group-hover:text-lime-400 transition-colors">{project.title}</h3>
+                           <p className="text-xs font-mono text-fuchsia-400 mb-4">{project.subtitle}</p>
+                           
+                           <p className="text-gray-400 text-sm mb-6 flex-grow leading-relaxed">
+                              {project.description}
+                           </p>
+                           
+                           <div className="flex flex-wrap gap-2 mt-auto">
+                              {project.tech.slice(0,3).map(t => (
+                                 <span key={t} className="text-[10px] uppercase tracking-wider px-2 py-1 bg-white/5 rounded text-gray-300">
+                                    {t}
+                                 </span>
+                              ))}
+                           </div>
+                           
+                           <a href={project.link} target="_blank" rel="noreferrer" className="mt-6 w-full py-2 bg-white/5 hover:bg-lime-500 hover:text-black rounded text-center text-sm font-bold transition-all">
+                              ACCESS TERMINAL
+                           </a>
+                        </div>
+                     </div>
+                  </AnimatedCard>
+               ))}
+            </div>
+         </div>
+      </section>
+
+      {/* Experience Section */}
+      <section id="experience" className="py-24 relative">
+         <div className="container mx-auto px-6">
+            <AnimatedCard>
+               <h2 className="text-3xl font-bold mb-16 flex items-center gap-4">
+                  <span className="text-lime-400">03.</span> 
+                  <span>EXPERIENCE</span>
+                  <div className="h-px bg-gray-800 flex-grow ml-4"></div>
+               </h2>
+            </AnimatedCard>
+
+            <div className="max-w-4xl mx-auto space-y-12">
+               {experience.map((exp, index) => (
+                  <AnimatedCard key={index} delay={index * 200}>
+                     <div className="relative pl-8 md:pl-0">
+                        {/* Mobile Line */}
+                        <div className="md:hidden absolute left-0 top-0 bottom-0 w-px bg-gray-800"></div>
+                        
+                        <div className="md:flex items-start gap-10 group">
+                           <div className="hidden md:block w-32 text-right pt-2">
+                              <span className="text-sm font-mono text-gray-500 group-hover:text-lime-400 transition-colors">{exp.period}</span>
+                           </div>
+                           
+                           {/* Dot */}
+                           <div className="hidden md:block w-4 h-4 rounded-full bg-gray-800 border-2 border-lime-500 relative z-10 mt-2 group-hover:bg-lime-500 transition-colors shadow-[0_0_10px_rgba(163,230,53,0.5)]"></div>
+                           
+                           <div className="flex-1 bg-gray-900/50 p-6 rounded-xl border border-white/5 group-hover:border-lime-500/30 transition-all">
+                              <div className="md:hidden text-xs font-mono text-lime-400 mb-2">{exp.period}</div>
+                              <h3 className="text-xl font-bold text-white mb-1">{exp.title}</h3>
+                              <h4 className="text-fuchsia-400 font-medium mb-4">{exp.company}</h4>
+                              <p className="text-gray-400 text-sm leading-relaxed">{exp.description}</p>
+                           </div>
+                        </div>
+                     </div>
+                  </AnimatedCard>
+               ))}
+            </div>
+
+            {/* Achievements */}
+            <div className="mt-20 max-w-4xl mx-auto">
+               <h3 className="text-xl font-bold text-center mb-8 text-gray-400">/// SYSTEM_AWARDS ///</h3>
+               <div className="grid md:grid-cols-2 gap-4">
+                  {achievements.map((item, i) => (
+                     <AnimatedCard key={i} delay={i * 100}>
+                        <a href={item.link || "#"} className={`flex items-center gap-4 p-4 bg-gray-900/30 border border-white/5 rounded-lg hover:bg-white/5 transition-colors ${item.link ? 'cursor-pointer hover:border-fuchsia-500/50' : 'cursor-default'}`}>
+                           <div className="text-yellow-400">{item.icon}</div>
+                           <span className="text-sm text-gray-300">{item.text}</span>
+                        </a>
+                     </AnimatedCard>
+                  ))}
+               </div>
+            </div>
+         </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24 relative">
+         <div className="container mx-auto px-6 text-center">
+            <AnimatedCard>
+               <h2 className="text-5xl md:text-6xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-800">
+                  GET IN TOUCH
+               </h2>
+               <p className="text-gray-400 max-w-lg mx-auto mb-12 text-lg">
+                  Currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+               </p>
+               
+               <a href="mailto:maajb1122@gmail.com" className="inline-flex items-center gap-3 px-8 py-4 bg-lime-500 text-black font-bold rounded hover:bg-lime-400 transition-transform hover:scale-105">
+                  <Mail size={20} /> SAY HELLO
+               </a>
+
+               <div className="mt-20 flex justify-center gap-8">
+                  {[
+                     { icon: <Github />, href: "https://github.com/iammaaj10" },
+                     { icon: <Linkedin />, href: "https://www.linkedin.com/in/maaj-bhadgaonkar/" },
+                     { icon: <Phone />, href: "tel:+918485878048" }
+                  ].map((social, i) => (
+                     <a key={i} href={social.href} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-fuchsia-400 transition-colors transform hover:scale-110">
+                        {social.icon}
+                     </a>
+                  ))}
+               </div>
+            </AnimatedCard>
+         </div>
+      </section>
+
+      <footer className="py-8 text-center text-gray-600 text-sm font-mono border-t border-white/5 bg-black">
+         <p>DESIGNED & BUILT BY MAAJ BHADGAONKAR © 2025</p>
       </footer>
     </div>
   );
