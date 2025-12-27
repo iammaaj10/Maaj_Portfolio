@@ -223,9 +223,9 @@ const Portfolio = () => {
   // --- Data (Unchanged) ---
   const skills = {
     "Programming Languages": ["C", "C++", "Java", "Python", "JavaScript", "TypeScript", "SQL"],
-    "Web Development": ["HTML", "CSS", "React.js", "Node.js", "Express.js", "REST APIs"],
+    "Web Development": ["HTML", "CSS", "React.js", "Node.js", "Express.js", "REST APIs","Next JS"],
     "AI & ML": ["NLP basics", "Pandas", "NumPy", "Matplotlib"],
-    "Tools & Technologies": ["MongoDB", "Git", "GitHub", "Figma", "Linux basics"],
+    "Tools & Technologies": ["MongoDB", "PostgreSQL", "Git", "GitHub", "Figma", "Linux basics" ."Supabase" ],
   };
 
   const projects = [
