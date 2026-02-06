@@ -269,7 +269,7 @@ const Portfolio = () => {
   };
 
   // --- Data ---
-  const bioText = "I am a final-year Computer Science student at DKTE Society’s Textile & Engineering Institute, maintaining a strong academic record with a CGPA of 8.36. I am a passionate Full-Stack Developer with hands-on experience in building scalable, real-world applications using React, Next.js, Node.js, MongoDB, and modern UI frameworks. I have developed 5+ end-to-end projects, including real-time platforms with authentication, role-based access, live updates, and secure backend architectures. Currently, I am deepening my expertise in Next.js, system design fundamentals, and modern frontend–backend integration, while also exploring AI-integration, AI agents and AI-assisted features in web applications.";
+  const bioText = "I am a final-year Computer Science student at DKTE Society's Textile & Engineering Institute, maintaining a strong academic record with a CGPA of 8.36. I am a passionate Full-Stack Developer with hands-on experience in building scalable, real-world applications using React, Next.js, Node.js, MongoDB, and modern UI frameworks. I have developed 5+ end-to-end projects, including real-time platforms with authentication, role-based access, live updates, and secure backend architectures. Currently, I am deepening my expertise in Next.js, system design fundamentals, and modern frontend–backend integration, while also exploring AI-integration, AI agents and AI-assisted features in web applications.";
 
   const skills = {
     "Core Stack": ["React.js", "Next.js", "Node.js", "Express.js", "MongoDB", "PostgreSQL"],
@@ -354,6 +354,13 @@ const Portfolio = () => {
   ];
 
   const experience = [
+    {
+      title: "Software Development Engineer Intern",
+      company: "TregaDevs",
+      period: "Nov 2025 – Jan 2026",
+      description: "Built CoachOS, a full-stack education platform with role-based access for Admins, Teachers, and Students. Implemented NextAuth (JWT) authentication, Teacher Attendance Management system with class creation and bulk attendance submission, and RESTful APIs using Node.js, Express, and Prisma ORM. Developed scalable frontend with Next.js (App Router), dynamic role-based dashboards, and reusable UI components using Tailwind CSS.",
+      icon: <Code size={20} />,
+    },
     {
       title: "Frontend Developer",
       company: "BlueStock Fintech",
