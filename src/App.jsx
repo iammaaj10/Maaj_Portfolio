@@ -274,8 +274,8 @@ const Portfolio = () => {
   const skills = {
     "Core Stack": ["React.js", "Next.js", "Node.js", "Express.js", "MongoDB", "PostgreSQL"],
     "Languages": ["JavaScript", "TypeScript", "Python", "Java", "C++", "SQL"],
-    "AI & Data": ["AI Agents", "Gemini API", "Pandas", "NumPy", "NLP Basics"],
-    "Tools & DevOps": ["Git", "GitHub", "Docker Basics", "Figma", "Linux", "Supabase"],
+    "AI & Data": ["AI Agents", "ML", "Pandas", "NumPy", "NLP Basics"],
+    "Tools & DevOps": ["Git", "GitHub", "Docker Basics", "Figma", "Linux", "Supabase" , "Prisma" , "Tailwind CSS"],
   };
 
   const projects = [
