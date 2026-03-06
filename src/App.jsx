@@ -665,37 +665,36 @@ const Portfolio = () => {
             </h2>
           </AnimatedCard>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
             {projects.map((project, index) => (
-              <AnimatedCard key={index} delay={index * 100} className={project.featured ? "md:col-span-2 lg:col-span-1" : ""}>
-                <div className={`group h-full bg-gray-900/40 border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 ${project.featured ? "border-violet-500/40 hover:border-violet-400/70 shadow-[0_0_30px_rgba(139,92,246,0.1)]" : "border-white/10 hover:border-lime-500/50"}`}>
+              <AnimatedCard key={index} delay={index * 100}>
+                <div className={`group flex flex-col bg-gray-900/40 border rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 ${project.featured ? "border-violet-500/40 hover:border-violet-400/70 shadow-[0_0_30px_rgba(139,92,246,0.1)]" : "border-white/10 hover:border-lime-500/50"}`}>
                   {/* Top Gradient Bar */}
-                  <div className={`h-1 w-full bg-gradient-to-r ${project.gradient}`} />
+                  <div className={`h-1 w-full flex-shrink-0 bg-gradient-to-r ${project.gradient}`} />
 
-                  {/* Featured badge */}
-                  {project.featured && (
-                    <div className="px-6 pt-4">
-                      <span className="inline-flex items-center gap-1.5 text-[10px] tracking-widest px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 uppercase font-bold">
-                        <Sparkles size={10} /> Featured Project
-                      </span>
-                    </div>
-                  )}
+                  <div className="p-6 flex flex-col flex-1">
+                    {/* Featured badge — inside padding so it aligns properly */}
+                    {project.featured && (
+                      <div className="mb-4">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] tracking-widest px-2.5 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 uppercase font-bold">
+                          <Sparkles size={10} /> Featured Project
+                        </span>
+                      </div>
+                    )}
 
-                  <div className="p-6 flex flex-col h-full">
                     <div className="flex justify-between items-start mb-4">
-                      <div className={`p-3 rounded-lg bg-gray-800 text-white group-hover:text-lime-400 transition-colors`}>
+                      <div className="p-3 rounded-lg bg-gray-800 text-white group-hover:text-lime-400 transition-colors">
                         {project.icon}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 items-center">
                         {project.status === "Live Demo" && <ExternalLink size={16} className="text-gray-500 hover:text-white cursor-pointer" />}
                         <Github size={16} className="text-gray-500 hover:text-white cursor-pointer" />
                       </div>
                     </div>
 
                     <h3 className="text-xl font-bold text-white mb-1 group-hover:text-lime-400 transition-colors">{project.title}</h3>
-                    <p className="text-xs font-mono text-fuchsia-400 mb-4">{project.subtitle}</p>
-
-                    <p className="text-gray-400 text-sm mb-6 flex-grow leading-relaxed">{project.description}</p>
+                    <p className="text-xs font-mono text-fuchsia-400 mb-3">{project.subtitle}</p>
+                    <p className="text-gray-400 text-sm mb-4 leading-relaxed">{project.description}</p>
 
                     {project.featured && (
                       <div className="mb-4 flex flex-wrap gap-1.5">
@@ -705,13 +704,13 @@ const Portfolio = () => {
                       </div>
                     )}
 
-                    <div className="flex flex-wrap gap-2 mt-auto">
+                    <div className="flex flex-wrap gap-2 mt-auto pt-2">
                       {project.tech.slice(0, 3).map(t => (
                         <span key={t} className="text-[10px] uppercase tracking-wider px-2 py-1 bg-white/5 rounded text-gray-300">{t}</span>
                       ))}
                     </div>
 
-                    <a href={project.link} target="_blank" rel="noreferrer" className={`mt-6 w-full py-2 rounded text-center text-sm font-bold transition-all ${project.featured ? "bg-violet-500/20 hover:bg-violet-500 text-violet-300 hover:text-white border border-violet-500/30" : "bg-white/5 hover:bg-lime-500 hover:text-black"}`}>
+                    <a href={project.link} target="_blank" rel="noreferrer" className={`mt-5 w-full py-2 rounded text-center text-sm font-bold transition-all ${project.featured ? "bg-violet-500/20 hover:bg-violet-500 text-violet-300 hover:text-white border border-violet-500/30" : "bg-white/5 hover:bg-lime-500 hover:text-black"}`}>
                       ACCESS TERMINAL
                     </a>
                   </div>
