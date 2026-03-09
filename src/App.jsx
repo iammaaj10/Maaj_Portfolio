@@ -26,7 +26,7 @@ import {
   Cpu,
   Globe,
   PenTool,
-  Bot
+  
 } from "lucide-react";
 
 // --- Global Styles Injection (For standalone functionality) ---
