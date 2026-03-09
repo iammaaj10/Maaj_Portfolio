@@ -25,7 +25,8 @@ import {
   Terminal,
   Cpu,
   Globe,
-  PenTool
+  PenTool,
+  Bot
 } from "lucide-react";
 
 // --- Global Styles Injection (For standalone functionality) ---
@@ -464,6 +465,8 @@ const Portfolio = () => {
     { text: "Winner - 1st place in Smart India Hackathon (Internal 2024)", icon: <Award size={20} /> },
     { text: "Google Cloud Storage Skill Badge (2024)", icon: <Cloud size={20} /> },
     { text: "AWS Cloud Technical Essentials (2025)", icon: <Cloud size={20} /> },
+    { text: "Selected for the MSBTE project competition" , icon: <Award size={20}/>},
+    { text:  "Got the certification in machine learning" , icon: <Bot size={20}/>}
   ];
 
   if (!introFinished) {
