@@ -352,12 +352,12 @@ const Portfolio = () => {
     {
       title: "Narratia",
       subtitle: "AI-Powered Writing Platform",
-      year: "2025",
+      year: "2026",
       description: "Full-featured writing platform using Next.js 16, TypeScript, and Supabase serving creative writers and content teams with hierarchical project organization and real-time collaboration.",
       features: ["AI Writing Assistant", "Real-time Collaboration", "Screenplay Converter", "Emotion Heatmaps"],
       tech: ["Next.js 16", "TypeScript", "Supabase", "Gemini 2.0 Flash", "TipTap"],
-      status: "GitHub",
-      link: "https://github.com/iammaaj10/Narratia",
+      status: "Live Demo",
+      link: "https://narratia-wheat.vercel.app/",
       icon: <PenTool size={24} />,
       gradient: "from-violet-500 to-fuchsia-500",
       featured: true
@@ -802,7 +802,7 @@ const Portfolio = () => {
       </section>
 
       <footer className="py-8 text-center text-gray-600 text-sm font-mono border-t border-white/5 bg-black">
-        <p>DESIGNED & BUILT BY MAAJ BHADGAONKAR © 2025</p>
+        <p>DESIGNED & BUILT BY MAAJ BHADGAONKAR © 2026</p>
       </footer>
     </div>
   );
