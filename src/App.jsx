@@ -555,7 +555,7 @@ const Portfolio = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://drive.google.com/uc?export=download&id=16I8cbf-MGro3UMrFXAoBQSb9v2JpOEse" className="px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded font-bold transition-all hover:scale-105 flex items-center justify-center gap-2">
+              <a href="https://drive.google.com/file/d/1WSDp5k_mGrN7Z_Y1oJwvJvc1y-O7w2W-/view?usp=sharing" className="px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded font-bold transition-all hover:scale-105 flex items-center justify-center gap-2">
                 <Download size={18} /> DOWNLOAD CV
               </a>
               <button onClick={() => scrollToSection("projects")} className="px-8 py-3 border border-lime-400 text-lime-400 hover:bg-lime-400/10 rounded font-bold transition-all hover:scale-105">
