@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { mindNodes, mindEdges } from "../../data/mindSystemData";
 import { sound } from "../../utils/audioEngine";
 
@@ -17,6 +17,7 @@ export default function NeuralCanvas({
   const requestRef = useRef(null);
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
+  const touchStartDistRef = useRef(null);
   const mousePosRef = useRef({ x: 0, y: 0, worldX: 0, worldY: 0 });
 
   // Floating nodes physics state
@@ -71,6 +72,21 @@ export default function NeuralCanvas({
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
+  // Non-passive wheel event listener to prevent browser console warning
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleWheelNative = (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
+      setZoomScale((prev) => Math.min(Math.max(prev * zoomFactor, 0.5), 2.2));
+    };
+
+    canvas.addEventListener("wheel", handleWheelNative, { passive: false });
+    return () => canvas.removeEventListener("wheel", handleWheelNative);
+  }, [setZoomScale]);
+
   // Convert Screen coordinates to Canvas World Coordinates
   const screenToWorld = useCallback(
     (screenX, screenY) => {
@@ -116,12 +132,12 @@ export default function NeuralCanvas({
 
   // Drag Start / End
   const handleMouseDown = (e) => {
-    if (e.button !== 0) return; // primary click only
+    if (e.button !== 0) return;
     isDraggingRef.current = true;
     dragStartRef.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = () => {
     if (isDraggingRef.current) {
       isDraggingRef.current = false;
     }
@@ -145,11 +161,57 @@ export default function NeuralCanvas({
     }
   };
 
-  // Mouse Wheel Zoom
-  const handleWheel = (e) => {
-    e.preventDefault();
-    const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
-    setZoomScale((prev) => Math.min(Math.max(prev * zoomFactor, 0.5), 2.2));
+  // Mobile Touch Controls (Pan & Tap)
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      isDraggingRef.current = true;
+      dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchStartDistRef.current = dist;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 1 && isDraggingRef.current) {
+      const dx = e.touches[0].clientX - dragStartRef.current.x;
+      const dy = e.touches[0].clientY - dragStartRef.current.y;
+      setPanOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+      dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length === 2 && touchStartDistRef.current) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const factor = dist / touchStartDistRef.current;
+      setZoomScale((prev) => Math.min(Math.max(prev * (factor > 1 ? 1.03 : 0.97), 0.5), 2.2));
+      touchStartDistRef.current = dist;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (e.changedTouches.length === 1 && isDraggingRef.current) {
+      const touch = e.changedTouches[0];
+      const world = screenToWorld(touch.clientX, touch.clientY);
+      let clickedId = null;
+
+      nodesStateRef.current.forEach((node) => {
+        const dist = Math.hypot(world.x - node.currentX, world.y - node.currentY);
+        if (dist <= node.radius + 20) {
+          clickedId = node.id;
+        }
+      });
+
+      if (clickedId) {
+        sound.playClickSound();
+        onSelectNode(clickedId);
+      }
+    }
+    isDraggingRef.current = false;
+    touchStartDistRef.current = null;
   };
 
   // Main Render Loop
@@ -168,7 +230,7 @@ export default function NeuralCanvas({
       ctx.save();
       ctx.scale(dpr, dpr);
 
-      // Clear Canvas with dark futuristic slate background
+      // Clear Canvas
       ctx.fillStyle = isOverclocked ? "#050010" : "#030712";
       ctx.fillRect(0, 0, width, height);
 
@@ -217,11 +279,9 @@ export default function NeuralCanvas({
       // 2. Update Node Positions & Magnetic Repulsion
       const mouseWorld = mousePosRef.current;
       nodesStateRef.current.forEach((node) => {
-        // Gentle floating physics
         node.currentX += Math.sin(animationTime * node.pulseRate + node.x) * 0.15;
         node.currentY += Math.cos(animationTime * node.pulseRate + node.y) * 0.15;
 
-        // Mouse magnetic repulsion
         const dx = mouseWorld.worldX - node.currentX;
         const dy = mouseWorld.worldY - node.currentY;
         const dist = Math.hypot(dx, dy);
@@ -231,12 +291,10 @@ export default function NeuralCanvas({
           node.currentY -= (dy / dist) * force * 1.5;
         }
 
-        // Soft return spring to home position
         node.currentX += (node.x - node.currentX) * 0.03;
         node.currentY += (node.y - node.currentY) * 0.03;
       });
 
-      // Map node quick lookup
       const nodeMap = new Map(nodesStateRef.current.map((n) => [n.id, n]));
 
       // 3. Draw Network Edges & Energy Synapse Pulses
@@ -251,7 +309,6 @@ export default function NeuralCanvas({
           activeNodeId === fromNode.id ||
           activeNodeId === toNode.id;
 
-        // Base Line
         ctx.beginPath();
         ctx.moveTo(fromNode.currentX, fromNode.currentY);
         ctx.lineTo(toNode.currentX, toNode.currentY);
@@ -300,7 +357,6 @@ export default function NeuralCanvas({
         const pulse = Math.sin(animationTime * 2.5 + node.pulsePhase) * 0.15 + 1.0;
         const r = node.radius * (isHovered ? 1.15 : isActive ? 1.1 : 1.0);
 
-        // Outer Pulsing Energy Halo Ring
         ctx.beginPath();
         ctx.arc(node.currentX, node.currentY, r * 1.35 * pulse, 0, Math.PI * 2);
         ctx.strokeStyle = node.glowColor;
@@ -309,7 +365,6 @@ export default function NeuralCanvas({
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Node Main Body Glass Gradient
         const grad = ctx.createRadialGradient(
           node.currentX - r * 0.3,
           node.currentY - r * 0.3,
@@ -333,19 +388,16 @@ export default function NeuralCanvas({
         ctx.stroke();
         ctx.shadowBlur = 0;
 
-        // Inner Core Glow Dot
         ctx.beginPath();
         ctx.arc(node.currentX, node.currentY, 6 * pulse, 0, Math.PI * 2);
         ctx.fillStyle = "#ffffff";
         ctx.fill();
 
-        // Node Title Label
         ctx.font = `600 ${isHovered ? "13px" : "12px"} monospace`;
         ctx.textAlign = "center";
         ctx.fillStyle = isHovered ? "#ffffff" : "rgba(243, 244, 246, 0.9)";
         ctx.fillText(node.label, node.currentX, node.currentY + r + 20);
 
-        // Node Sublabel
         ctx.font = "10px sans-serif";
         ctx.fillStyle = node.color;
         ctx.fillText(node.sublabel, node.currentX, node.currentY + r + 34);
@@ -370,7 +422,7 @@ export default function NeuralCanvas({
   ]);
 
   return (
-    <div className="relative w-full h-full cursor-grab active:cursor-grabbing select-none overflow-hidden">
+    <div className="relative w-full h-full cursor-grab active:cursor-grabbing select-none overflow-hidden touch-none">
       <canvas
         ref={canvasRef}
         className="w-full h-full block"
@@ -378,7 +430,9 @@ export default function NeuralCanvas({
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onClick={handleClick}
-        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       />
     </div>
   );
