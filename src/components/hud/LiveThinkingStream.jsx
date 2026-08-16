@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Cpu, X, Send, Sparkles, MessageSquare, ExternalLink, RefreshCw } from "lucide-react";
+import { Cpu, X, Send, MessageSquare, ExternalLink, RefreshCw } from "lucide-react";
 import { thinkingStreamThoughts } from "../../data/mindSystemData";
 import { sound } from "../../utils/audioEngine";
 
@@ -281,7 +281,7 @@ export default function LiveThinkingStream({ isOpen, onClose }) {
 
             {isTyping && (
               <div className="flex items-center gap-2 text-cyan-400 text-xs p-2">
-                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                <Cpu className="w-3.5 h-3.5 animate-spin" />
                 <span>Processing neural query...</span>
               </div>
             )}

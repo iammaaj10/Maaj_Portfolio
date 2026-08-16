@@ -141,49 +141,53 @@ export const developerProfile = {
 export const skillCategories = [
   {
     name: "Languages & Core CS",
-    energy: 96,
+    status: "CORE_FOUNDATION",
+    tier: "PRODUCTION_MASTERY",
     color: "#00f0ff",
     skills: [
-      { name: "Java", level: 92, tag: "OOP & DSA" },
-      { name: "JavaScript / TypeScript", level: 96, tag: "Core Stack" },
-      { name: "Python", level: 90, tag: "AI & Data Scripts" },
-      { name: "SQL", level: 88, tag: "Relational Queries" },
-      { name: "Data Structures & Algorithms", level: 94, tag: "350+ LeetCode Solved" },
-      { name: "OOP & Linux Fundamentals", level: 92, tag: "System Design" }
+      { name: "Java", tier: "Advanced", tag: "OOP & DSA", highlight: "Object-Oriented Design & Algorithmic Problem Solving" },
+      { name: "JavaScript / TypeScript", tier: "Expert", tag: "Core Stack", highlight: "Full-Stack Enterprise Applications & Type Safety" },
+      { name: "Python", tier: "Advanced", tag: "AI & Data", highlight: "FastAPI, NLP Transformers & AI Pipelines" },
+      { name: "SQL", tier: "Proficient", tag: "Relational Queries", highlight: "Complex Joins, Indexing & Query Optimization" },
+      { name: "Data Structures & Algorithms", tier: "Mastery", tag: "350+ LeetCode", highlight: "Trees, Graphs, DP & System Design" },
+      { name: "OOP & Linux Fundamentals", tier: "Advanced", tag: "System Architecture", highlight: "Design Patterns, Shell Scripting & POSIX" }
     ]
   },
   {
     name: "Frontend Architecture",
-    energy: 95,
+    status: "ACTIVE_DEPLOYED",
+    tier: "PRODUCTION_TIER_1",
     color: "#a855f7",
     skills: [
-      { name: "React.js / Next.js", level: 98, tag: "Primary Framework" },
-      { name: "TailwindCSS & HTML/CSS", level: 96, tag: "UI Tokens & Styling" },
-      { name: "Framer Motion & Canvas", level: 92, tag: "Physics & Motion" },
-      { name: "WebAssembly (WASM)", level: 86, tag: "Transformers.js In-Browser" }
+      { name: "React.js / Next.js", tier: "Production Master", tag: "Primary Framework", highlight: "Shipped in Narratia, SignTrace, Shoro AI & MechHelp" },
+      { name: "TailwindCSS & CSS Tokens", tier: "Expert", tag: "UI & Shaders", highlight: "Custom Design Systems, Glassmorphism & Cyber HUDs" },
+      { name: "Framer Motion & Canvas", tier: "Advanced", tag: "Physics & Motion", highlight: "60 FPS Interactive Canvases & Particle Synapses" },
+      { name: "WebAssembly (WASM)", tier: "Specialized", tag: "In-Browser AI", highlight: "Local Air-Gapped Transformers.js in ClauseLens (<50ms)" }
     ]
   },
   {
     name: "Backend & Cloud",
-    energy: 93,
+    status: "HIGH_THROUGHPUT",
+    tier: "SCALABLE_SYSTEMS",
     color: "#10b981",
     skills: [
-      { name: "Node.js / Express.js", level: 95, tag: "Async Runtime" },
-      { name: "REST APIs & GraphQL", level: 92, tag: "API Orchestration" },
-      { name: "Socket.IO & WebSockets", level: 94, tag: "Real-time Telemetry" },
-      { name: "AWS Cloud Essentials", level: 88, tag: "Certified 2025" },
-      { name: "Docker & Linux CLI", level: 86, tag: "Containers & OS" }
+      { name: "Node.js / Express.js", tier: "Production Master", tag: "Async Runtime", highlight: "High-Throughput Microservices & Secure Auth" },
+      { name: "REST APIs & GraphQL", tier: "Advanced", tag: "API Orchestration", highlight: "Contract-Driven APIs & Query Resolution in Shoro AI" },
+      { name: "Socket.IO & WebSockets", tier: "Specialized", tag: "Real-Time Telemetry", highlight: "50km Live Geo-Dispatch in MechHelp & Team Sync" },
+      { name: "AWS Cloud Infrastructure", tier: "Certified 2025", tag: "Cloud Architecture", highlight: "IAM Security, S3, Serverless & Technical Essentials" },
+      { name: "Docker & Containers", tier: "Proficient", tag: "DevOps & CI", highlight: "Containerization & Multi-Environment Deployments" }
     ]
   },
   {
-    name: "Databases & Tools",
-    energy: 91,
+    name: "Databases & Tooling",
+    status: "PRODUCTION_READY",
+    tier: "DATA_ENGINEERING",
     color: "#f59e0b",
     skills: [
-      { name: "MongoDB", level: 94, tag: "NoSQL & Geospatial" },
-      { name: "PostgreSQL & Supabase", level: 92, tag: "Relational Storage" },
-      { name: "Prisma ORM", level: 90, tag: "Type-Safe DB Client" },
-      { name: "Git / GitHub & Postman", level: 95, tag: "CI/CD & API Testing" }
+      { name: "MongoDB", tier: "Advanced", tag: "NoSQL & GIS", highlight: "Geospatial Indexing ($near queries) & Aggregation Pipelines" },
+      { name: "PostgreSQL & Supabase", tier: "Advanced", tag: "Relational DB", highlight: "Real-time subscriptions, RBAC & Version Control in Narratia" },
+      { name: "Prisma ORM", tier: "Proficient", tag: "Type-Safe DB Client", highlight: "Schema Migrations & Scalable Data Models in Tregadevs" },
+      { name: "Git, GitHub & Postman", tier: "Expert", tag: "Workflow & Testing", highlight: "CI/CD Automations, Branch Workflows & End-to-End API Tests" }
     ]
   }
 ];

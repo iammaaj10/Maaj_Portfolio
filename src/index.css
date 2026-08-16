@@ -8,28 +8,81 @@
     );
     background-size: 100% 4px;
   }
+
+  .bg-cyber-grid {
+    background-image: linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .bg-cyber-hex {
+    background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  .cyber-cut {
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+
+  .cyber-cut-corner {
+    clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0% calc(100% - 14px), 0% 14px);
+  }
+
+  .cyber-cut-sm {
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.08);
+  }
+
+  .neon-glow-violet {
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.08);
+  }
+
+  .neon-glow-gold {
+    box-shadow: 0 0 25px rgba(234, 179, 8, 0.2), inset 0 0 15px rgba(234, 179, 8, 0.08);
+  }
+
+  .neon-glow-emerald {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.2), inset 0 0 15px rgba(16, 185, 129, 0.08);
+  }
+
+  .neon-glow-pink {
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.2), inset 0 0 15px rgba(236, 72, 153, 0.08);
+  }
 }
 
 /* Custom Cyber Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(3, 7, 18, 0.8);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 240, 255, 0.3);
-  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.35);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.6);
+  background: rgba(0, 240, 255, 0.7);
 }
 
 /* Keyframe animations */
+@keyframes holo-sweep {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 0.6; }
+  100% { transform: translateY(1000%); opacity: 0; }
+}
+
+.animate-holo-sweep {
+  animation: holo-sweep 4s linear infinite;
+}
+
 @keyframes title-shimmer {
   0%, 100% { background-position: -200% 0; }
   50% { background-position: 200% 0; }
@@ -42,4 +95,13 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 3s infinite ease-in-out;
+}
+
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-radar-spin {
+  animation: radar-spin 10s linear infinite;
 }

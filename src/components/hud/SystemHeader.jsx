@@ -5,7 +5,6 @@ import {
   VolumeX,
   Terminal,
   RotateCcw,
-  Sparkles,
   Activity,
   Cpu,
   Tv,
