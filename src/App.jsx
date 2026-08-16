@@ -5,11 +5,14 @@ import SystemHeader from "./components/hud/SystemHeader";
 import LiveThinkingStream from "./components/hud/LiveThinkingStream";
 import NavRadarMinimap from "./components/hud/NavRadarMinimap";
 import TerminalModal from "./components/hud/TerminalModal";
+import ResumeModal from "./components/hud/ResumeModal";
 import SystemCoreModal from "./components/nodes/SystemCoreModal";
 import ProjectPortalModal from "./components/portals/ProjectPortalModal";
 import SkillMatrixVisualizer from "./components/skills/SkillMatrixVisualizer";
 import ExperienceTimeline from "./components/experience/ExperienceTimeline";
 import ContactProtocol from "./components/contact/ContactProtocol";
+import AchievementsModal from "./components/nodes/AchievementsModal";
+import AcademicModal from "./components/nodes/AcademicModal";
 import { mindNodes } from "./data/mindSystemData";
 import { sound } from "./utils/audioEngine";
 
@@ -22,10 +25,12 @@ export default function App() {
   const [scanlinesActive, setScanlinesActive] = useState(true);
   const [thinkingStreamOpen, setThinkingStreamOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
 
   // Compute current System State Label for Header HUD
   const getSystemStateLabel = () => {
     if (activeNodeId) return `PORTAL_ACTIVE: [${activeNodeId.toUpperCase()}]`;
+    if (resumeOpen) return "RESUME_PROTOCOL";
     if (thinkingStreamOpen) return "THINKING_STREAM";
     if (hoveredNodeId) return `NEURAL_EXPLORING: [${hoveredNodeId.toUpperCase()}]`;
     return "IDLE_STANDBY";
@@ -62,6 +67,8 @@ export default function App() {
       } else if (e.key === "Escape") {
         if (activeNodeId) {
           setActiveNodeId(null);
+        } else if (resumeOpen) {
+          setResumeOpen(false);
         } else if (terminalOpen) {
           setTerminalOpen(false);
         } else if (thinkingStreamOpen) {
@@ -71,7 +78,7 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeNodeId, terminalOpen, thinkingStreamOpen]);
+  }, [activeNodeId, resumeOpen, terminalOpen, thinkingStreamOpen]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">
@@ -97,6 +104,7 @@ export default function App() {
         systemState={getSystemStateLabel()}
         onResetCanvas={handleResetCanvas}
         onOpenTerminal={() => setTerminalOpen(true)}
+        onOpenResume={() => setResumeOpen(true)}
         onToggleScanlines={() => setScanlinesActive((prev) => !prev)}
         scanlinesActive={scanlinesActive}
         onToggleThinkingStream={() => setThinkingStreamOpen((prev) => !prev)}
@@ -142,6 +150,12 @@ export default function App() {
         onTriggerOverclock={() => setIsOverclocked((prev) => !prev)}
       />
 
+      {/* Dedicated Resume Protocol Modal */}
+      <ResumeModal
+        isOpen={resumeOpen}
+        onClose={() => setResumeOpen(false)}
+      />
+
       {/* Active Node Modals */}
       <SystemCoreModal
         isOpen={activeNodeId === "system-core"}
@@ -162,6 +176,16 @@ export default function App() {
 
       <ExperienceTimeline
         isOpen={activeNodeId === "experience-log"}
+        onClose={() => setActiveNodeId(null)}
+      />
+
+      <AchievementsModal
+        isOpen={activeNodeId === "achievements-node"}
+        onClose={() => setActiveNodeId(null)}
+      />
+
+      <AcademicModal
+        isOpen={activeNodeId === "academic-matrix"}
         onClose={() => setActiveNodeId(null)}
       />
 

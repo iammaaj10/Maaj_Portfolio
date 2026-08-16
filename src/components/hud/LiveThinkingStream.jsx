@@ -100,24 +100,45 @@ export default function LiveThinkingStream({ isOpen, onClose }) {
       };
     }
 
-    // 7. Tech Stack & Skills
-    if (query.includes("stack") || query.includes("skill") || query.includes("framework") || query.includes("react")) {
+    // 7. LeetCode & DSA
+    if (query.includes("leetcode") || query.includes("dsa") || query.includes("problem")) {
       return {
-        text: "⚡ TECH STACK & ARCHITECTURE:\n- Frontend: React.js, Next.js, TypeScript, TailwindCSS, Framer Motion, HTML5 Canvas / Three.js\n- Backend: Node.js, Express, Python, FastAPI, GraphQL, REST\n- Databases & Tools: MongoDB, PostgreSQL, Prisma, AWS, Git, Vercel\n- AI / ML: LLM APIs, NLP Transformers, RAG Systems, Scikit-Learn"
+        text: "⚡ LEETCODE & ALGORITHMIC MASTERY:\n- 350+ Data Structures & Algorithms problems solved.\n- Proficient in Trees, Graphs, Dynamic Programming, Arrays, and String manipulation."
       };
     }
 
-    // 8. Contact & Hiring
-    if (query.includes("contact") || query.includes("hire") || query.includes("email") || query.includes("reach")) {
+    // 8. Hackathon & Awards
+    if (query.includes("hackathon") || query.includes("award") || query.includes("sih") || query.includes("winner")) {
       return {
-        text: "📡 COMMUNICATION UPLINK:\n- Email: iammaaj10@gmail.com\n- GitHub: https://github.com/iammaaj10\n- Status: Available for High-Impact Full-Stack & AI Engineering Opportunities."
+        text: "🏆 ACHIEVEMENTS & HONORS:\n- 1st Place Winner, Internal Smart India Hackathon (SIH) 2024.\n- AWS Certified: Cloud Technical Essentials (2025)."
       };
     }
 
-    // 9. Bio / Who is Maaj
+    // 9. Academic & Grades
+    if (query.includes("education") || query.includes("gpa") || query.includes("degree") || query.includes("college")) {
+      return {
+        text: "🎓 ACADEMIC BACKGROUND:\n- B.Tech in CSE @ DKTE Society’s Textile & Eng. Institute (2023–2026) | CGPA: 8.46\n- Diploma in Computer Engineering @ Sant Gajanan Maharaj Rural Poly. (2020–2023) | 89.09%\n- SSC 10th Grade (2019–2020) | 86.60%"
+      };
+    }
+
+    // 10. Tech Stack & Skills
+    if (query.includes("stack") || query.includes("skill") || query.includes("framework") || query.includes("react") || query.includes("java")) {
+      return {
+        text: "⚡ TECHNICAL SKILLS:\n- Languages: Java, Python, JavaScript, SQL\n- Frontend: React.js, Next.js, HTML, CSS, TypeScript, TailwindCSS\n- Backend: Node.js, Express.js, REST APIs, Socket.IO\n- Databases: MongoDB, PostgreSQL, Supabase\n- Tools & Cloud: Git, GitHub, Docker, Postman, Figma, AWS"
+      };
+    }
+
+    // 11. Contact & Hiring
+    if (query.includes("contact") || query.includes("hire") || query.includes("email") || query.includes("phone") || query.includes("reach")) {
+      return {
+        text: "📡 COMMUNICATION UPLINK:\n- Name: Maaj Bhadagaonkar\n- Email: maajb1122@gmail.com\n- Phone: +91 9130304068\n- Location: Pune, Maharashtra, India\n- GitHub: https://github.com/iammaaj10\n- LinkedIn: https://linkedin.com/in/maaj-bhadgaonkar/\n- Status: Open for Entry-Level SDE Roles."
+      };
+    }
+
+    // 12. Bio / Who is Maaj
     if (query.includes("who") || query.includes("maaj") || query.includes("about") || query.includes("hi") || query.includes("hello")) {
       return {
-        text: "🧠 DEVELOPER MIND OVERVIEW:\n- Name: Maaj\n- Role: Full-Stack & AI Systems Architect\n- Specialty: 60fps Interactive UI Canvases, Real-time AI Systems, and Scalable Full-Stack Web Applications."
+        text: "🧠 DEVELOPER MIND OVERVIEW:\n- Full-stack developer who ships production-grade products end-to-end.\n- Experience spanning MERN, Next.js, Socket.IO, local WASM AI engines, paid internships, security freelance work, and SIH 2024 hackathon victory."
       };
     }
 

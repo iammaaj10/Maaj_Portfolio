@@ -39,10 +39,13 @@ export default function TerminalModal({
       case "help":
         newHist.push({
           text: `AVAILABLE COMMANDS:
+- resume        : Launch Official Resume Protocol
+- achievements  : View SIH Hackathon, LeetCode (350+), & AWS Certs
+- academic      : View B.Tech (8.46 CGPA) & Diploma Grades
 - projects      : Navigate to Case-Study Projects Node
 - skills        : Navigate to Skill Matrix Node
 - narratia      : Open Narratia Live System
-- clause        : Open Clause Lens Repository
+- clause        : Open ClauseLens Repository
 - experience    : Navigate to Experience Log Node
 - contact       : Navigate to Communication Uplink Node
 - overclock     : ENGAGE OVERCLOCK MATRIX MODE (Easter Egg)
@@ -51,6 +54,18 @@ export default function TerminalModal({
 - exit          : Close Terminal Console`,
           type: "out"
         });
+        break;
+      case "resume":
+        newHist.push({ text: "Opening Official Resume Protocol...", type: "out" });
+        onSelectNode(null);
+        break;
+      case "achievements":
+        onSelectNode("achievements-node");
+        onClose();
+        break;
+      case "academic":
+        onSelectNode("academic-matrix");
+        onClose();
         break;
       case "projects":
         onSelectNode("projects-portal");

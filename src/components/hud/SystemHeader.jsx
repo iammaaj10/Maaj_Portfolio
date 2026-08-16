@@ -8,7 +8,8 @@ import {
   Sparkles,
   Activity,
   Cpu,
-  Tv
+  Tv,
+  FileText
 } from "lucide-react";
 import { sound } from "../../utils/audioEngine";
 
@@ -16,6 +17,7 @@ export default function SystemHeader({
   systemState,
   onResetCanvas,
   onOpenTerminal,
+  onOpenResume,
   onToggleScanlines,
   scanlinesActive,
   onToggleThinkingStream,
@@ -112,6 +114,16 @@ export default function SystemHeader({
         >
           <Cpu className="w-4 h-4 text-emerald-400" />
           <span className="hidden md:inline">LIVE THINKING</span>
+        </button>
+
+        {/* Resume Viewer Trigger */}
+        <button
+          onClick={onOpenResume}
+          className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(0,240,255,0.15)]"
+          title="Open Official Resume Protocol"
+        >
+          <FileText className="w-4 h-4 text-cyan-400" />
+          <span className="hidden sm:inline">RESUME</span>
         </button>
 
         {/* CLI Terminal Trigger */}

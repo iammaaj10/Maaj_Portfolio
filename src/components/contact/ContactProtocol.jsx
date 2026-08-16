@@ -11,7 +11,7 @@ export default function ContactProtocol({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText("iammaaj10@gmail.com");
+    navigator.clipboard.writeText("maajb1122@gmail.com");
     sound.playClickSound();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -94,7 +94,7 @@ export default function ContactProtocol({ isOpen, onClose }) {
               </a>
 
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/in/maaj-bhadgaonkar/"
                 target="_blank"
                 rel="noreferrer"
                 className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-violet-500/50 flex items-center gap-2 text-xs font-mono text-slate-200 transition-all"
