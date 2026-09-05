@@ -36,13 +36,35 @@ export default function App() {
     return "IDLE_STANDBY";
   };
 
-  // Center Canvas Viewport on specified node ID
+  // Bounds constants
+  const MIN_ZOOM = 0.75;
+  const MAX_ZOOM = 1.45;
+  const MAX_PAN_X = 350;
+  const MAX_PAN_Y = 260;
+
+  // Center Canvas Viewport on specified node ID with bounding
   const centerOnNode = useCallback((nodeId) => {
     const node = mindNodes.find((n) => n.id === nodeId);
     if (node) {
-      setPanOffset({ x: -node.x * zoomScale, y: -node.y * zoomScale });
+      const limitX = MAX_PAN_X * zoomScale;
+      const limitY = MAX_PAN_Y * zoomScale;
+      const targetX = -node.x * zoomScale;
+      const targetY = -node.y * zoomScale;
+      setPanOffset({
+        x: Math.max(-limitX, Math.min(limitX, targetX)),
+        y: Math.max(-limitY, Math.min(limitY, targetY))
+      });
     }
   }, [zoomScale]);
+
+  // Zoom Helpers
+  const handleZoomIn = () => {
+    setZoomScale((prev) => Math.min(prev * 1.15, MAX_ZOOM));
+  };
+
+  const handleZoomOut = () => {
+    setZoomScale((prev) => Math.max(prev * 0.85, MIN_ZOOM));
+  };
 
   // Handle Node Selection
   const handleSelectNode = (nodeId) => {
@@ -140,6 +162,9 @@ export default function App() {
           centerOnNode(id);
           setActiveNodeId(id);
         }}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onResetCanvas={handleResetCanvas}
       />
 
       {/* Interactive CLI Terminal Console */}

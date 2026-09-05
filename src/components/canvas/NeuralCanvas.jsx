@@ -72,20 +72,46 @@ export default function NeuralCanvas({
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
-  // Non-passive wheel event listener to prevent browser console warning
+  // Bounds constants to prevent infinite void scrolling/panning
+  const MIN_ZOOM = 0.75;
+  const MAX_ZOOM = 1.45;
+  const MAX_PAN_X = 350;
+  const MAX_PAN_Y = 260;
+
+  const clampPan = useCallback((x, y, zoom = zoomScale) => {
+    const limitX = MAX_PAN_X * zoom;
+    const limitY = MAX_PAN_Y * zoom;
+    return {
+      x: Math.max(-limitX, Math.min(limitX, x)),
+      y: Math.max(-limitY, Math.min(limitY, y))
+    };
+  }, [zoomScale]);
+
+  // Non-passive wheel event listener with bounded zoom and pan
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const handleWheelNative = (e) => {
       e.preventDefault();
-      const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
-      setZoomScale((prev) => Math.min(Math.max(prev * zoomFactor, 0.5), 2.2));
+      const zoomFactor = e.deltaY < 0 ? 1.06 : 0.94;
+      setZoomScale((prevZoom) => {
+        const nextZoom = Math.min(Math.max(prevZoom * zoomFactor, MIN_ZOOM), MAX_ZOOM);
+        setPanOffset((prevPan) => {
+          const limitX = MAX_PAN_X * nextZoom;
+          const limitY = MAX_PAN_Y * nextZoom;
+          return {
+            x: Math.max(-limitX, Math.min(limitX, prevPan.x)),
+            y: Math.max(-limitY, Math.min(limitY, prevPan.y))
+          };
+        });
+        return nextZoom;
+      });
     };
 
     canvas.addEventListener("wheel", handleWheelNative, { passive: false });
     return () => canvas.removeEventListener("wheel", handleWheelNative);
-  }, [setZoomScale]);
+  }, [setZoomScale, setPanOffset]);
 
   // Convert Screen coordinates to Canvas World Coordinates
   const screenToWorld = useCallback(
@@ -110,7 +136,7 @@ export default function NeuralCanvas({
     if (isDraggingRef.current) {
       const dx = e.clientX - dragStartRef.current.x;
       const dy = e.clientY - dragStartRef.current.y;
-      setPanOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+      setPanOffset((prev) => clampPan(prev.x + dx, prev.y + dy));
       dragStartRef.current = { x: e.clientX, y: e.clientY };
       return;
     }
@@ -161,7 +187,7 @@ export default function NeuralCanvas({
     }
   };
 
-  // Mobile Touch Controls (Pan & Tap)
+  // Mobile Touch Controls (Bounded Pan & Tap)
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
       isDraggingRef.current = true;
@@ -179,7 +205,7 @@ export default function NeuralCanvas({
     if (e.touches.length === 1 && isDraggingRef.current) {
       const dx = e.touches[0].clientX - dragStartRef.current.x;
       const dy = e.touches[0].clientY - dragStartRef.current.y;
-      setPanOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+      setPanOffset((prev) => clampPan(prev.x + dx, prev.y + dy));
       dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     } else if (e.touches.length === 2 && touchStartDistRef.current) {
       const dist = Math.hypot(
@@ -187,7 +213,7 @@ export default function NeuralCanvas({
         e.touches[0].clientY - e.touches[1].clientY
       );
       const factor = dist / touchStartDistRef.current;
-      setZoomScale((prev) => Math.min(Math.max(prev * (factor > 1 ? 1.03 : 0.97), 0.5), 2.2));
+      setZoomScale((prev) => Math.min(Math.max(prev * (factor > 1 ? 1.02 : 0.98), MIN_ZOOM), MAX_ZOOM));
       touchStartDistRef.current = dist;
     }
   };

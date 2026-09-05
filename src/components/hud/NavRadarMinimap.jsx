@@ -6,7 +6,10 @@ export default function NavRadarMinimap({
   activeNodeId,
   panOffset,
   zoomScale,
-  onCenterNode
+  onCenterNode,
+  onZoomIn,
+  onZoomOut,
+  onResetCanvas
 }) {
   const radarWidth = 140;
   const radarHeight = 110;
@@ -121,6 +124,40 @@ export default function NavRadarMinimap({
             strokeDasharray="2,2"
           />
         </svg>
+
+        {/* Viewport & Zoom Controls */}
+        <div className="flex items-center justify-between gap-1 pt-1 border-t border-slate-800 text-[10px] font-mono">
+          <button
+            onClick={() => {
+              sound.playClickSound();
+              onZoomOut?.();
+            }}
+            title="Zoom Out (-)"
+            className="px-2 py-0.5 rounded bg-slate-900 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500/40 transition-colors"
+          >
+            -
+          </button>
+          <button
+            onClick={() => {
+              sound.playClickSound();
+              onResetCanvas?.();
+            }}
+            title="Recenter Mind Matrix"
+            className="px-2 py-0.5 rounded bg-slate-900 hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500/40 transition-colors text-[9px]"
+          >
+            CENTER
+          </button>
+          <button
+            onClick={() => {
+              sound.playClickSound();
+              onZoomIn?.();
+            }}
+            title="Zoom In (+)"
+            className="px-2 py-0.5 rounded bg-slate-900 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-slate-800 hover:border-cyan-500/40 transition-colors"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );

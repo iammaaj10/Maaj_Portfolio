@@ -53,7 +53,33 @@
   }
 }
 
-/* Custom Cyber Scrollbars */
+/* Global Root Lock - Prevents infinite page scrolling and browser bounce */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden !important;
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  background-color: #030712;
+  color: #f8fafc;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden !important;
+  position: relative;
+}
+
+/* Custom Cyber Scrollbars with Overscroll Isolation */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -70,6 +96,12 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 240, 255, 0.7);
+}
+
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+  overscroll-behavior: contain !important;
 }
 
 /* Keyframe animations */
