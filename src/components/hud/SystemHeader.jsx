@@ -8,7 +8,8 @@ import {
   Activity,
   Cpu,
   Tv,
-  FileText
+  FileText,
+  Camera
 } from "lucide-react";
 import { sound } from "../../utils/audioEngine";
 
@@ -21,7 +22,8 @@ export default function SystemHeader({
   scanlinesActive,
   onToggleThinkingStream,
   thinkingStreamOpen,
-  isOverclocked
+  isOverclocked,
+  onStartAutopilot
 }) {
   const [isMuted, setIsMuted] = useState(false);
   const [fps, setFps] = useState(60);
@@ -91,6 +93,15 @@ export default function SystemHeader({
           <span className="w-2 h-2 rounded-full bg-current animate-ping" />
           <span>STATUS: {isOverclocked ? "OVERCLOCK_MAX" : systemState}</span>
         </div>
+
+        {/* Autopilot Demo Trigger */}
+        <button
+          onClick={onStartAutopilot}
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-cyan-500/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-mono text-xs font-semibold tracking-wide shadow-[0_0_10px_rgba(0,240,255,0.2)] hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all group"
+        >
+          <Camera className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+          <span>AUTOPILOT TOUR</span>
+        </button>
       </div>
 
       {/* Right: Controls & Telemetry */}

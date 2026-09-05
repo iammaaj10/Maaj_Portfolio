@@ -13,6 +13,7 @@ import ExperienceTimeline from "./components/experience/ExperienceTimeline";
 import ContactProtocol from "./components/contact/ContactProtocol";
 import AchievementsModal from "./components/nodes/AchievementsModal";
 import AcademicModal from "./components/nodes/AcademicModal";
+import AutopilotOverlay from "./components/hud/AutopilotOverlay";
 import { mindNodes } from "./data/mindSystemData";
 import { sound } from "./utils/audioEngine";
 
@@ -26,6 +27,12 @@ export default function App() {
   const [thinkingStreamOpen, setThinkingStreamOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+
+  // Autopilot State
+  const [isAutopilotActive, setIsAutopilotActive] = useState(false);
+  const [autopilotSubtitle, setAutopilotSubtitle] = useState("");
+  const [autopilotProgress, setAutopilotProgress] = useState(0);
+  const autopilotAbortController = React.useRef(null);
 
   // Compute current System State Label for Header HUD
   const getSystemStateLabel = () => {
@@ -42,7 +49,54 @@ export default function App() {
   const MAX_PAN_X = 350;
   const MAX_PAN_Y = 260;
 
-  // Center Canvas Viewport on specified node ID with bounding
+  // Smoothly animate Canvas Viewport on specified node ID
+  const smoothCenterOnNode = useCallback((nodeId, duration = 1200) => {
+    return new Promise((resolve) => {
+      const node = mindNodes.find((n) => n.id === nodeId);
+      if (!node) return resolve();
+      
+      const targetZoom = 1.0;
+      const limitX = MAX_PAN_X * targetZoom;
+      const limitY = MAX_PAN_Y * targetZoom;
+      const targetX = Math.max(-limitX, Math.min(limitX, -node.x * targetZoom));
+      const targetY = Math.max(-limitY, Math.min(limitY, -node.y * targetZoom));
+
+      setPanOffset((startPan) => {
+        setZoomScale((startZoom) => {
+          const startX = startPan.x;
+          const startY = startPan.y;
+          const startTime = performance.now();
+
+          const animate = (time) => {
+            const elapsed = time - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // EaseOutQuart for buttery smooth, decelerating drone camera effect
+            const ease = 1 - Math.pow(1 - progress, 4);
+
+            setPanOffset({
+              x: startX + (targetX - startX) * ease,
+              y: startY + (targetY - startY) * ease
+            });
+            
+            setZoomScale(startZoom + (targetZoom - startZoom) * ease);
+
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              resolve();
+            }
+          };
+          requestAnimationFrame(animate);
+          
+          return startZoom; // return initial to not break the setter 
+        });
+        return startPan;
+      });
+    });
+  }, []);
+
+  // Center Canvas Viewport (Instant)
   const centerOnNode = useCallback((nodeId) => {
     const node = mindNodes.find((n) => n.id === nodeId);
     if (node) {
@@ -68,6 +122,7 @@ export default function App() {
 
   // Handle Node Selection
   const handleSelectNode = (nodeId) => {
+    if (isAutopilotActive) cancelAutopilot();
     setActiveNodeId(nodeId);
     centerOnNode(nodeId);
   };
@@ -78,6 +133,91 @@ export default function App() {
     setActiveNodeId(null);
     setPanOffset({ x: 0, y: 0 });
     setZoomScale(1.0);
+    if (isAutopilotActive) cancelAutopilot();
+  };
+
+  // Cancel Autopilot
+  const cancelAutopilot = () => {
+    if (autopilotAbortController.current) {
+      autopilotAbortController.current.abort();
+    }
+    setIsAutopilotActive(false);
+  };
+
+  // Autopilot Orchestrator
+  const startAutopilotTour = async () => {
+    if (isAutopilotActive) return;
+    
+    // Close any open modals
+    setActiveNodeId(null);
+    setTerminalOpen(false);
+    setResumeOpen(false);
+    setThinkingStreamOpen(false);
+    
+    setIsAutopilotActive(true);
+    setAutopilotProgress(0);
+    setAutopilotSubtitle("Initializing Developer Blueprint...");
+    
+    const abortController = new AbortController();
+    autopilotAbortController.current = abortController;
+    
+    const delay = (ms) => new Promise((resolve, reject) => {
+      const timeout = setTimeout(resolve, ms);
+      abortController.signal.addEventListener("abort", () => {
+        clearTimeout(timeout);
+        reject(new Error("Autopilot Aborted"));
+      });
+    });
+
+    try {
+      // 1. System Core
+      await smoothCenterOnNode("system-core", 1200);
+      setActiveNodeId("system-core");
+      setAutopilotProgress(15);
+      await delay(4000);
+      setActiveNodeId(null);
+      await delay(500);
+
+      // 2. Projects (Narratia & MechHelp)
+      setAutopilotSubtitle("Analyzing Case-Study Systems & Real-Time Architecture...");
+      await smoothCenterOnNode("projects-portal", 1500);
+      setAutopilotProgress(40);
+      setActiveNodeId("projects-portal");
+      await delay(5000);
+      setActiveNodeId(null);
+      await delay(500);
+
+      // 3. Skills Matrix
+      setAutopilotSubtitle("Evaluating Tech Stack & Production Deliverables...");
+      await smoothCenterOnNode("skills-matrix", 1500);
+      setAutopilotProgress(65);
+      setActiveNodeId("skills-matrix");
+      await delay(4000);
+      setActiveNodeId(null);
+      await delay(500);
+
+      // 4. Resume/Dossier
+      setAutopilotSubtitle("Accessing SDE Dossier & Telemetry...");
+      await smoothCenterOnNode("system-core", 1000);
+      setAutopilotProgress(85);
+      setResumeOpen(true);
+      await delay(4000);
+      setResumeOpen(false);
+      await delay(500);
+
+      // 5. Contact Protocol
+      setAutopilotSubtitle("Direct Uplink Established. Ready for Transmission.");
+      await smoothCenterOnNode("contact-protocol", 1500);
+      setAutopilotProgress(100);
+      setActiveNodeId("contact-protocol");
+      
+      // End gracefully
+      setIsAutopilotActive(false);
+    } catch (err) {
+      if (err.message === "Autopilot Aborted") {
+        console.log("Tour aborted.");
+      }
+    }
   };
 
   // Keyboard Shortcuts (Ctrl+K or ~ for terminal, Esc to close/reset)
@@ -86,8 +226,9 @@ export default function App() {
       if ((e.ctrlKey && e.key === "k") || e.key === "`") {
         e.preventDefault();
         setTerminalOpen((prev) => !prev);
-      } else if (e.key === "Escape") {
-        if (activeNodeId) {
+        if (isAutopilotActive) {
+          cancelAutopilot();
+        } else if (activeNodeId) {
           setActiveNodeId(null);
         } else if (resumeOpen) {
           setResumeOpen(false);
@@ -100,7 +241,7 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeNodeId, resumeOpen, terminalOpen, thinkingStreamOpen]);
+  }, [activeNodeId, resumeOpen, terminalOpen, thinkingStreamOpen, isAutopilotActive]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">
@@ -132,6 +273,15 @@ export default function App() {
         onToggleThinkingStream={() => setThinkingStreamOpen((prev) => !prev)}
         thinkingStreamOpen={thinkingStreamOpen}
         isOverclocked={isOverclocked}
+        onStartAutopilot={startAutopilotTour}
+      />
+
+      {/* Autopilot Cinematic Overlay */}
+      <AutopilotOverlay
+        isActive={isAutopilotActive}
+        subtitle={autopilotSubtitle}
+        progress={autopilotProgress}
+        onCancel={cancelAutopilot}
       />
 
       {/* Interactive 60fps Neural Network Canvas Engine */}
