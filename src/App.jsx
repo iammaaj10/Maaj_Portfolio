@@ -14,6 +14,7 @@ import ContactProtocol from "./components/contact/ContactProtocol";
 import AchievementsModal from "./components/nodes/AchievementsModal";
 import AcademicModal from "./components/nodes/AcademicModal";
 import AutopilotOverlay from "./components/hud/AutopilotOverlay";
+import QuickScanMode from "./components/hud/QuickScanMode";
 import { mindNodes } from "./data/mindSystemData";
 import { sound } from "./utils/audioEngine";
 
@@ -27,6 +28,7 @@ export default function App() {
   const [thinkingStreamOpen, setThinkingStreamOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [isQuickScan, setIsQuickScan] = useState(false);
 
   // Autopilot State
   const [isAutopilotActive, setIsAutopilotActive] = useState(false);
@@ -153,6 +155,7 @@ export default function App() {
     setTerminalOpen(false);
     setResumeOpen(false);
     setThinkingStreamOpen(false);
+    setIsQuickScan(false);
     
     setIsAutopilotActive(true);
     setAutopilotProgress(0);
@@ -244,7 +247,7 @@ export default function App() {
   }, [activeNodeId, resumeOpen, terminalOpen, thinkingStreamOpen, isAutopilotActive]);
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none">
+    <main className="relative w-screen h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans select-none bg-grain">
       {/* Sci-Fi Laser Cursor */}
       <CustomCursor isHoveredNode={!!hoveredNodeId} />
 
@@ -252,6 +255,9 @@ export default function App() {
       {scanlinesActive && (
         <div className="pointer-events-none fixed inset-0 z-30 bg-scanlines opacity-40 mix-blend-overlay" />
       )}
+
+      {/* Vignette Depth Layer */}
+      <div className="vignette" />
 
       {/* Futuristic Ambient Glow Background Shader */}
       <div
@@ -274,6 +280,11 @@ export default function App() {
         thinkingStreamOpen={thinkingStreamOpen}
         isOverclocked={isOverclocked}
         onStartAutopilot={startAutopilotTour}
+        isQuickScan={isQuickScan}
+        onToggleQuickScan={() => {
+          setIsQuickScan(!isQuickScan);
+          if (!isQuickScan && isAutopilotActive) cancelAutopilot();
+        }}
       />
 
       {/* Autopilot Cinematic Overlay */}
@@ -332,42 +343,49 @@ export default function App() {
       />
 
       {/* Active Node Modals */}
-      <SystemCoreModal
-        isOpen={activeNodeId === "system-core"}
-        onClose={() => setActiveNodeId(null)}
-        onSelectNode={handleSelectNode}
-      />
+      {!isQuickScan && (
+        <>
+          <SystemCoreModal
+            isOpen={activeNodeId === "system-core"}
+            onClose={() => setActiveNodeId(null)}
+            onSelectNode={handleSelectNode}
+          />
 
-      <ProjectPortalModal
-        isOpen={activeNodeId === "projects-portal"}
-        onClose={() => setActiveNodeId(null)}
-        initialProjectId="narratia"
-      />
+          <ProjectPortalModal
+            isOpen={activeNodeId === "projects-portal"}
+            onClose={() => setActiveNodeId(null)}
+            initialProjectId="narratia"
+          />
 
-      <SkillMatrixVisualizer
-        isOpen={activeNodeId === "skills-matrix"}
-        onClose={() => setActiveNodeId(null)}
-      />
+          <SkillMatrixVisualizer
+            isOpen={activeNodeId === "skills-matrix"}
+            onClose={() => setActiveNodeId(null)}
+          />
 
-      <ExperienceTimeline
-        isOpen={activeNodeId === "experience-log"}
-        onClose={() => setActiveNodeId(null)}
-      />
+          <ExperienceTimeline
+            isOpen={activeNodeId === "experience-log"}
+            onClose={() => setActiveNodeId(null)}
+          />
 
-      <AchievementsModal
-        isOpen={activeNodeId === "achievements-node"}
-        onClose={() => setActiveNodeId(null)}
-      />
+          <AchievementsModal
+            isOpen={activeNodeId === "achievements-node"}
+            onClose={() => setActiveNodeId(null)}
+          />
 
-      <AcademicModal
-        isOpen={activeNodeId === "academic-matrix"}
-        onClose={() => setActiveNodeId(null)}
-      />
+          <AcademicModal
+            isOpen={activeNodeId === "academic-matrix"}
+            onClose={() => setActiveNodeId(null)}
+          />
 
-      <ContactProtocol
-        isOpen={activeNodeId === "contact-protocol"}
-        onClose={() => setActiveNodeId(null)}
-      />
+          <ContactProtocol
+            isOpen={activeNodeId === "contact-protocol"}
+            onClose={() => setActiveNodeId(null)}
+          />
+        </>
+      )}
+
+      {/* Global Overlays */}
+      {isQuickScan && <QuickScanMode />}
     </main>
   );
 }

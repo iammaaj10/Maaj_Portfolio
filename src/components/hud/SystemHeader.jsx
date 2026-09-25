@@ -23,7 +23,9 @@ export default function SystemHeader({
   onToggleThinkingStream,
   thinkingStreamOpen,
   isOverclocked,
-  onStartAutopilot
+  onStartAutopilot,
+  isQuickScan,
+  onToggleQuickScan
 }) {
   const [isMuted, setIsMuted] = useState(false);
   const [fps, setFps] = useState(60);
@@ -97,10 +99,23 @@ export default function SystemHeader({
         {/* Autopilot Demo Trigger */}
         <button
           onClick={onStartAutopilot}
-          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-cyan-500/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-mono text-xs font-semibold tracking-wide shadow-[0_0_10px_rgba(0,240,255,0.2)] hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all group"
+          className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-cyan-500/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(0,240,255,0.2)] hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all group"
         >
           <Camera className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
           <span>AUTOPILOT TOUR</span>
+        </button>
+
+        {/* Quick Scan Mode Trigger */}
+        <button
+          onClick={onToggleQuickScan}
+          className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono text-[10px] font-bold tracking-widest uppercase transition-all shadow-sm ${
+            isQuickScan 
+              ? "border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]" 
+              : "border-slate-700 bg-slate-900/80 text-slate-400 hover:border-slate-500 hover:text-slate-200"
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>QUICK SCAN</span>
         </button>
       </div>
 

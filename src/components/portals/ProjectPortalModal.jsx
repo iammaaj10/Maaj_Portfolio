@@ -14,7 +14,9 @@ import {
   Radio,
   Share2,
   Code2,
-  ShieldCheck
+  ShieldCheck,
+  Target,
+  ArrowDown
 } from "lucide-react";
 import { projectsData } from "../../data/projectsData";
 import { sound } from "../../utils/audioEngine";
@@ -130,27 +132,35 @@ export default function ProjectPortalModal({ isOpen, onClose, initialProjectId }
           {/* Right Main Area: Holographic Case Study Chamber */}
           <div className="flex-1 flex flex-col bg-slate-950/90 overflow-hidden relative">
             {/* Top Bar with Holographic Title */}
-            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-slate-900/90 border-b border-slate-800/90">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 sm:py-5 bg-slate-900/90 border-b border-slate-800/90 gap-4">
+              <div className="flex items-start sm:items-center gap-4">
                 <div
-                  className="p-2 rounded-xl border flex items-center justify-center"
+                  className="p-3 rounded border border-dashed flex flex-col items-center justify-center shrink-0 relative overflow-hidden"
                   style={{
-                    backgroundColor: `${selectedProject.nodeColor}15`,
+                    backgroundColor: `${selectedProject.nodeColor}10`,
                     borderColor: `${selectedProject.nodeColor}60`
                   }}
                 >
-                  <Cpu className="w-5 h-5" style={{ color: selectedProject.nodeColor }} />
+                  <Target className="w-6 h-6 animate-[spin_4s_linear_infinite]" style={{ color: selectedProject.nodeColor }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/5 opacity-50" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wide">
-                      {selectedProject.title}
-                    </h3>
-                    <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                      {selectedProject.category}
+                
+                <div className="flex flex-col">
+                  <div className="text-[10px] font-mono text-red-500 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                    TARGET ACQUIRED
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-slate-100 font-mono tracking-widest uppercase">
+                    {selectedProject.title}
+                  </h3>
+                  <div className="text-[10px] font-mono text-cyan-400 mt-1 uppercase tracking-wider">
+                    {selectedProject.tagline}
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-400">
+                      STATUS: OPERATIONAL
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 font-sans mt-0.5">{selectedProject.tagline}</p>
                 </div>
               </div>
 
@@ -159,18 +169,18 @@ export default function ProjectPortalModal({ isOpen, onClose, initialProjectId }
                   sound.playClickSound();
                   onClose();
                 }}
-                className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all"
+                className="self-start sm:self-center p-2 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/50 transition-all"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Sub-Navigation Tabs */}
-            <div className="flex items-center gap-2 px-4 sm:px-6 py-2 bg-slate-950 border-b border-slate-800/80 text-xs font-mono overflow-x-auto">
+            <div className="flex items-center gap-2 px-4 sm:px-6 py-2 bg-slate-950 border-b border-slate-800/80 text-[10px] font-mono overflow-x-auto tracking-widest uppercase">
               {[
-                { id: "overview", label: "01 // OVERVIEW & METRICS", icon: Activity },
-                { id: "architecture", label: "02 // PIPELINE ARCHITECTURE", icon: Layers },
-                { id: "highlights", label: "03 // ENGINEERING WINS", icon: ShieldCheck }
+                { id: "overview", label: "01 // OVERVIEW", icon: Activity },
+                { id: "architecture", label: "02 // ARCHITECTURE TRACE", icon: Layers },
+                ...(selectedProject.securityAnalysis ? [{ id: "security", label: "03 // SECURITY ANALYSIS", icon: ShieldCheck }] : [])
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -181,10 +191,10 @@ export default function ProjectPortalModal({ isOpen, onClose, initialProjectId }
                       sound.playClickSound();
                       setActiveTab(tab.id);
                     }}
-                    className={`px-3 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                    className={`px-3 py-2 rounded-sm border transition-all flex items-center gap-2 whitespace-nowrap ${
                       isActive
-                        ? "bg-violet-500/20 border-violet-400 text-violet-200 shadow-[0_0_15px_rgba(168,85,247,0.25)] font-bold"
-                        : "border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-800"
+                        ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-300 shadow-[0_0_10px_rgba(0,240,255,0.2)] font-bold"
+                        : "border-transparent text-slate-500 hover:text-slate-300 hover:border-slate-800"
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -274,49 +284,102 @@ export default function ProjectPortalModal({ isOpen, onClose, initialProjectId }
               )}
 
               {activeTab === "architecture" && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-violet-400 font-mono text-xs font-bold tracking-wider">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase">
                     <Layers className="w-4 h-4" />
-                    <span>SYSTEM EXECUTION PIPELINE</span>
+                    <span>SYSTEM ARCHITECTURE TRACE</span>
                   </div>
 
-                  <div className="space-y-3">
-                    {selectedProject.architecture.map((step, idx) => (
-                      <div
-                        key={idx}
-                        className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-violet-500/40 transition-all flex items-start gap-3.5 text-xs text-slate-200"
-                      >
-                        <div className="w-7 h-7 rounded-lg bg-violet-950 border border-violet-400 text-violet-300 flex items-center justify-center font-mono font-bold shrink-0 mt-0.5 shadow-[0_0_10px_rgba(168,85,247,0.3)]">
-                          {`0${idx + 1}`}
-                        </div>
-                        <div className="space-y-1">
+                  {selectedProject.architectureTrace ? (
+                    <div className="p-6 rounded bg-slate-950 border border-slate-800 font-mono text-sm relative">
+                      {/* Animated scanning line behind trace */}
+                      <div className="absolute top-0 bottom-0 left-12 w-px bg-slate-800 z-0" />
+                      <motion.div
+                        className="absolute top-0 bottom-0 left-12 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent z-0"
+                        animate={{ y: ["-100%", "100%"] }}
+                        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                      />
+                      
+                      <div className="flex flex-col items-start gap-4 relative z-10">
+                        {selectedProject.architectureTrace.map((node, i) => (
+                          <div key={i} className="flex flex-col items-center">
+                            <motion.div
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.15 }}
+                              className="px-4 py-2 rounded bg-slate-900 border border-slate-700 text-cyan-300 font-bold tracking-wider text-xs ml-8 relative"
+                            >
+                              {/* Connection Node */}
+                              <div className="absolute top-1/2 -left-4 w-4 h-px bg-slate-600" />
+                              <div className="absolute top-1/2 -left-5 w-2 h-2 -mt-1 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+                              
+                              {node}
+                            </motion.div>
+                            {i < selectedProject.architectureTrace.length - 1 && (
+                              <ArrowDown className="w-4 h-4 text-slate-600 my-2 ml-8 opacity-50" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {selectedProject.architecture.map((step, idx) => (
+                        <div
+                          key={idx}
+                          className="p-4 rounded bg-slate-900/60 border border-slate-800 flex items-start gap-3.5 text-xs text-slate-300"
+                        >
+                          <div className="w-6 h-6 rounded bg-slate-950 border border-slate-700 text-cyan-400 flex items-center justify-center font-mono font-bold shrink-0">
+                            {`0${idx + 1}`}
+                          </div>
                           <span className="leading-relaxed font-sans">{step}</span>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
-              {activeTab === "highlights" && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold tracking-wider">
-                    <Zap className="w-4 h-4" />
-                    <span>VERIFIED PERFORMANCE WINS</span>
+              {activeTab === "security" && selectedProject.securityAnalysis && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-red-400 font-mono text-[10px] font-bold tracking-widest uppercase">
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>SECURITY & THREAT ANALYSIS</span>
+                    </div>
+                    <span className="px-2 py-1 bg-red-500/10 border border-red-500/30 text-red-400 text-[9px] font-mono rounded animate-pulse">
+                      SCANNING
+                    </span>
                   </div>
 
-                  <div className="space-y-3">
-                    {selectedProject.highlights.map((h, idx) => (
-                      <div
-                        key={idx}
-                        className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all flex items-start gap-3.5 text-xs text-slate-200"
-                      >
-                        <div className="w-7 h-7 rounded-lg bg-emerald-950/60 border border-emerald-400 text-emerald-300 flex items-center justify-center shrink-0 mt-0.5">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        </div>
-                        <span className="leading-relaxed font-sans mt-1">{h}</span>
-                      </div>
-                    ))}
+                  <div className="bg-slate-950 border border-slate-800 rounded p-6 font-mono text-xs sm:text-sm tracking-widest uppercase relative overflow-hidden">
+                    {/* Visual Scanning Animation */}
+                    <motion.div
+                      className="absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent pointer-events-none"
+                      animate={{ y: ["-100%", "400%"] }}
+                      transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                    />
+                    
+                    <div className="space-y-4">
+                      {Object.entries(selectedProject.securityAnalysis).map(([key, status], idx) => {
+                        const isAnalyzed = status === "ANALYZED";
+                        const isZero = status === "ZERO";
+                        return (
+                          <motion.div
+                            key={key}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: idx * 0.2 }}
+                            className="flex items-center justify-between border-b border-slate-800 pb-2"
+                          >
+                            <span className="text-slate-400">{key.replace(/_/g, " ")}</span>
+                            <span className={`font-bold ${isAnalyzed ? "text-amber-400" : isZero ? "text-slate-300" : "text-emerald-400"}`}>
+                              {status}
+                            </span>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}

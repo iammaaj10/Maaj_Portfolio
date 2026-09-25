@@ -383,14 +383,35 @@ export default function NeuralCanvas({
         const pulse = Math.sin(animationTime * 2.5 + node.pulsePhase) * 0.15 + 1.0;
         const r = node.radius * (isHovered ? 1.15 : isActive ? 1.1 : 1.0);
 
+        // Orbital Data Rings
         ctx.beginPath();
-        ctx.arc(node.currentX, node.currentY, r * 1.35 * pulse, 0, Math.PI * 2);
+        ctx.arc(node.currentX, node.currentY, r * 1.45 * pulse, 0, Math.PI * 2);
         ctx.strokeStyle = node.glowColor;
         ctx.lineWidth = isHovered ? 2 : 1;
-        ctx.setLineDash([4, 4]);
+        ctx.setLineDash([2, 6]);
         ctx.stroke();
         ctx.setLineDash([]);
 
+        // Rotating Targeting Brackets for active/hovered
+        if (isHovered || isActive) {
+          ctx.save();
+          ctx.translate(node.currentX, node.currentY);
+          ctx.rotate(animationTime * (isHovered ? 1.5 : 0.5));
+          const bSize = r * 1.7;
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 1.5;
+          ctx.shadowColor = "#ffffff";
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(0, 0, bSize, 0, Math.PI / 3);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(0, 0, bSize, Math.PI, Math.PI + Math.PI / 3);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Multi-Layer Neon Glow
         const grad = ctx.createRadialGradient(
           node.currentX - r * 0.3,
           node.currentY - r * 0.3,
@@ -399,12 +420,12 @@ export default function NeuralCanvas({
           node.currentY,
           r
         );
-        grad.addColorStop(0, "rgba(30, 41, 59, 0.95)");
-        grad.addColorStop(0.7, "rgba(15, 23, 42, 0.9)");
+        grad.addColorStop(0, "rgba(30, 41, 59, 1)");
+        grad.addColorStop(0.6, "rgba(15, 23, 42, 0.9)");
         grad.addColorStop(1, node.color);
 
         ctx.shadowColor = node.color;
-        ctx.shadowBlur = isHovered || isActive ? 24 : 12;
+        ctx.shadowBlur = isHovered || isActive ? 30 : 15;
         ctx.beginPath();
         ctx.arc(node.currentX, node.currentY, r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
@@ -412,21 +433,28 @@ export default function NeuralCanvas({
         ctx.lineWidth = isHovered ? 3 : 1.5;
         ctx.strokeStyle = isHovered ? "#ffffff" : node.color;
         ctx.stroke();
+        
+        // Inner Core Glow
         ctx.shadowBlur = 0;
-
         ctx.beginPath();
         ctx.arc(node.currentX, node.currentY, 6 * pulse, 0, Math.PI * 2);
         ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = "#ffffff";
+        ctx.shadowBlur = 10;
         ctx.fill();
+        ctx.shadowBlur = 0;
 
-        ctx.font = `600 ${isHovered ? "13px" : "12px"} monospace`;
+        // HUD Labels
+        ctx.font = `600 ${isHovered ? "13px" : "11px"} monospace`;
         ctx.textAlign = "center";
         ctx.fillStyle = isHovered ? "#ffffff" : "rgba(243, 244, 246, 0.9)";
-        ctx.fillText(node.label, node.currentX, node.currentY + r + 20);
+        ctx.letterSpacing = "2px";
+        ctx.fillText(node.label.toUpperCase(), node.currentX, node.currentY + r + 24);
 
-        ctx.font = "10px sans-serif";
+        ctx.font = "bold 9px monospace";
         ctx.fillStyle = node.color;
-        ctx.fillText(node.sublabel, node.currentX, node.currentY + r + 34);
+        ctx.letterSpacing = "1px";
+        ctx.fillText(node.sublabel.toUpperCase(), node.currentX, node.currentY + r + 38);
       });
 
       ctx.restore();

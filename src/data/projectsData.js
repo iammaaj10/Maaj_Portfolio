@@ -1,5 +1,45 @@
 export const projectsData = [
   {
+    id: "mindloom",
+    title: "MindLoom",
+    tagline: "Personal AI Context & Learning Engine",
+    category: "AI & Local Intelligence",
+    liveUrl: null,
+    githubUrl: "https://github.com/iammaaj10/MindLoom",
+    featured: true,
+    nodeColor: "#3b82f6", // blue core
+    metrics: {
+      processing: "Local ML Indexing",
+      aiEngine: "Local ML + LLM Reasoning",
+      privacy: "On-Device First"
+    },
+    tech: ["Next.js", "TypeScript", "Python", "Local ML", "LLM", "TailwindCSS"],
+    summary: "A personal autonomous AI that learns from your own data. It uses local ML to find hidden patterns and layers an LLM on top for deep reasoning to generate highly personalized study plans, interview prep, and deep insights.",
+    architecture: [
+      "Local ML pipeline ingests and indexes personal data securely on-device without exposing raw context to external APIs.",
+      "Hybrid RAG (Retrieval-Augmented Generation) architecture where the LLM reasons on top of localized vector embeddings.",
+      "Next.js and TypeScript frontend providing a dynamic control interface for generating tailored study plans and insights."
+    ],
+    highlights: [
+      "Fully personalized autonomous insights tailored precisely to the user's uploaded context.",
+      "Zero-leak privacy model leveraging local ML processing before LLM reasoning.",
+      "Dynamic study plan and interview prep generation pipeline."
+    ],
+    architectureTrace: [
+      "USER_CONTEXT",
+      "LOCAL_ML_EMBEDDING",
+      "VECTOR_INDEX",
+      "LLM_REASONING",
+      "PERSONALIZED_INSIGHTS"
+    ],
+    securityAnalysis: {
+      "DATA_LOCALIZATION": "ACTIVE",
+      "API_EXPOSURE": "MINIMAL",
+      "CONTEXT_SANITIZATION": "ACTIVE",
+      "PROMPT_INJECTION": "ANALYZED"
+    }
+  },
+  {
     id: "narratia",
     title: "Narratia",
     tagline: "Collaborative AI Storytelling & Screenplay Suite",
@@ -24,7 +64,20 @@ export const projectsData = [
       "40% verified boost in team writing productivity during collaborative test sessions.",
       "Gemini 2.0 automated screenplay conversion with emotion heatmaps and version control.",
       "Secure RBAC permissions and instant auto-save backup pipelines."
-    ]
+    ],
+    architectureTrace: [
+      "CLIENT_EDITOR",
+      "SUPABASE_WEBSOCKET",
+      "POSTGRES_DB",
+      "GEMINI_2.0_LLM",
+      "HEATMAP_RENDERER"
+    ],
+    securityAnalysis: {
+      "RBAC_AUTHORIZATION": "ACTIVE",
+      "SOCKET_AUTHENTICATION": "ACTIVE",
+      "RATE_LIMITING": "ACTIVE",
+      "DATA_EXPOSURE": "ANALYZED"
+    }
   },
   {
     id: "clause-lens",
@@ -51,7 +104,20 @@ export const projectsData = [
       "Sub-50ms agreement scanning with 100% local air-gapped WASM Transformers.js execution.",
       "Zero host-page CSS pollution using isolated Shadow DOM tooltip injection.",
       "Instant risk score calculation preventing sneaky auto-renewals and data privacy waivers."
-    ]
+    ],
+    architectureTrace: [
+      "DOM_MUTATION_OBSERVER",
+      "REGEX_LEXICON",
+      "WASM_TRANSFORMERS",
+      "EMBEDDING_MATCH",
+      "SHADOW_DOM_RENDER"
+    ],
+    securityAnalysis: {
+      "AIR_GAPPED_EXECUTION": "ACTIVE",
+      "NETWORK_CALLS": "ZERO",
+      "CSS_ISOLATION": "ACTIVE",
+      "DOM_SANITIZATION": "ACTIVE"
+    }
   },
   {
     id: "mechhelp",
@@ -78,6 +144,13 @@ export const projectsData = [
       "Substantially cut emergency roadside assistance response times during pilot deployment.",
       "Live interactive Leaflet GIS map with 50km radius dispatcher discovery.",
       "Full socket chat stream between mechanics and drivers with job status workflows."
+    ],
+    architectureTrace: [
+      "GPS_TELEMETRY",
+      "NODE_EXPRESS_API",
+      "MONGODB_GEO_QUERY",
+      "SOCKET.IO_ROOM",
+      "CLIENT_MAP_RENDER"
     ]
   },
   {

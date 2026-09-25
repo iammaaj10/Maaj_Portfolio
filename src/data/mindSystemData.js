@@ -25,7 +25,7 @@ export const mindNodes = [
     glowColor: "rgba(168, 85, 247, 0.4)",
     icon: "FolderGit2",
     pulseRate: 2.0,
-    description: "Interactive neural showcase of Narratia (AI Storyteller), ClauseLens (Local WASM Scanner), MechHelp (Geo Dispatch), and production web systems."
+    description: "Interactive neural showcase of MindLoom (Personal AI), Narratia (AI Storyteller), ClauseLens (Local WASM Scanner), MechHelp (Geo Dispatch), and production web systems."
   },
   {
     id: "skills-matrix",
@@ -138,57 +138,36 @@ export const developerProfile = {
   ]
 };
 
-export const skillCategories = [
+export const engineeringSignals = [
   {
-    name: "Languages & Core CS",
-    status: "CORE_FOUNDATION",
-    tier: "PRODUCTION_MASTERY",
-    color: "#00f0ff",
-    skills: [
-      { name: "Java", tier: "Advanced", tag: "OOP & DSA", highlight: "Object-Oriented Design & Algorithmic Problem Solving" },
-      { name: "JavaScript / TypeScript", tier: "Expert", tag: "Core Stack", highlight: "Full-Stack Enterprise Applications & Type Safety" },
-      { name: "Python", tier: "Advanced", tag: "AI & Data", highlight: "FastAPI, NLP Transformers & AI Pipelines" },
-      { name: "SQL", tier: "Proficient", tag: "Relational Queries", highlight: "Complex Joins, Indexing & Query Optimization" },
-      { name: "Data Structures & Algorithms", tier: "Mastery", tag: "350+ LeetCode", highlight: "Trees, Graphs, DP & System Design" },
-      { name: "OOP & Linux Fundamentals", tier: "Advanced", tag: "System Architecture", highlight: "Design Patterns, Shell Scripting & POSIX" }
-    ]
+    name: "FULL STACK",
+    value: "04+ END-TO-END SYSTEMS",
+    evidence: "Architected production-grade systems including Narratia, MechHelp, NewsBlog, and MindLoom.",
+    color: "#00f0ff"
   },
   {
-    name: "Frontend Architecture",
-    status: "ACTIVE_DEPLOYED",
-    tier: "PRODUCTION_TIER_1",
-    color: "#a855f7",
-    skills: [
-      { name: "React.js / Next.js", tier: "Production Master", tag: "Primary Framework", highlight: "Shipped in Narratia, SignTrace, Shoro AI & MechHelp" },
-      { name: "TailwindCSS & CSS Tokens", tier: "Expert", tag: "UI & Shaders", highlight: "Custom Design Systems, Glassmorphism & Cyber HUDs" },
-      { name: "Framer Motion & Canvas", tier: "Advanced", tag: "Physics & Motion", highlight: "60 FPS Interactive Canvases & Particle Synapses" },
-      { name: "WebAssembly (WASM)", tier: "Specialized", tag: "In-Browser AI", highlight: "Local Air-Gapped Transformers.js in ClauseLens (<50ms)" }
-    ]
+    name: "AI & MACHINE LEARNING",
+    value: "RAG • LLM • AGENTS • LOCAL ML",
+    evidence: "Engineered MindLoom (Local ML + LLM RAG) and Narratia (Gemini 2.0 Integration).",
+    color: "#a855f7"
   },
   {
-    name: "Backend & Cloud",
-    status: "HIGH_THROUGHPUT",
-    tier: "SCALABLE_SYSTEMS",
-    color: "#10b981",
-    skills: [
-      { name: "Node.js / Express.js", tier: "Production Master", tag: "Async Runtime", highlight: "High-Throughput Microservices & Secure Auth" },
-      { name: "REST APIs & GraphQL", tier: "Advanced", tag: "API Orchestration", highlight: "Contract-Driven APIs & Query Resolution in Shoro AI" },
-      { name: "Socket.IO & WebSockets", tier: "Specialized", tag: "Real-Time Telemetry", highlight: "50km Live Geo-Dispatch in MechHelp & Team Sync" },
-      { name: "AWS Cloud Infrastructure", tier: "Certified 2025", tag: "Cloud Architecture", highlight: "IAM Security, S3, Serverless & Technical Essentials" },
-      { name: "Docker & Containers", tier: "Proficient", tag: "DevOps & CI", highlight: "Containerization & Multi-Environment Deployments" }
-    ]
+    name: "BACKEND ENGINEERING",
+    value: "AUTH • APIs • WEBSOCKETS • DATABASES",
+    evidence: "Designed scalable REST and Socket architectures using Node.js, Express, Supabase, and MongoDB.",
+    color: "#10b981"
   },
   {
-    name: "Databases & Tooling",
-    status: "PRODUCTION_READY",
-    tier: "DATA_ENGINEERING",
-    color: "#f59e0b",
-    skills: [
-      { name: "MongoDB", tier: "Advanced", tag: "NoSQL & GIS", highlight: "Geospatial Indexing ($near queries) & Aggregation Pipelines" },
-      { name: "PostgreSQL & Supabase", tier: "Advanced", tag: "Relational DB", highlight: "Real-time subscriptions, RBAC & Version Control in Narratia" },
-      { name: "Prisma ORM", tier: "Proficient", tag: "Type-Safe DB Client", highlight: "Schema Migrations & Scalable Data Models in Tregadevs" },
-      { name: "Git, GitHub & Postman", tier: "Expert", tag: "Workflow & Testing", highlight: "CI/CD Automations, Branch Workflows & End-to-End API Tests" }
-    ]
+    name: "SECURITY ENGINEERING",
+    value: "THREAT MODELING • VALIDATION • AIR-GAPPING",
+    evidence: "Developed ClauseLens (Local WASM Privacy Scanner) and completed a Security Engineering Internship at Vulnuris.",
+    color: "#ef4444"
+  },
+  {
+    name: "FRONTEND & WEBGL",
+    value: "NEXT.JS • TYPESCRIPT • REACT • CANVAS",
+    evidence: "Built Aura Sound (60fps Canvas Audio Equalizer) and this Autonomous Neural Portfolio.",
+    color: "#eab308"
   }
 ];
 
