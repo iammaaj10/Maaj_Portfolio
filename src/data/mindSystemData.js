@@ -270,6 +270,14 @@ export const achievementsData = [
     category: "Cloud Architecture Certification",
     color: "#a855f7",
     description: "Certified in core AWS cloud services, serverless computing, IAM security, and resilient cloud infrastructure design."
+  },
+  {
+    title: "Design Patent Granted",
+    event: "Government of India",
+    year: "2024",
+    category: "Intellectual Property",
+    color: "#10b981",
+    description: "Successfully secured a design patent from the Government of India for the 'MechHelp' real-time geo-dispatch emergency mechanic platform interface."
   }
 ];
 
