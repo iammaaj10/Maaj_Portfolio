@@ -284,14 +284,14 @@ export default function TopologicalEnvironment() {
 
             {/* Label */}
             <div className={`font-mono tracking-[0.2em] transition-all duration-300 ${
-              node.isCore ? "text-base font-medium" : "text-[11px]"
-            } ${isActive ? "text-[#F5F5F0]" : node.isCore ? "text-[#a3a3a3]" : "text-[#777]"}`}>
+              node.isCore ? "text-base font-semibold" : "text-[11.5px] font-medium"
+            } ${isActive ? "text-[#FFFFFF]" : node.isCore ? "text-[#e4e4e7]" : "text-[#a1a1aa]"}`}>
               {node.label}
             </div>
 
             {/* Sublabel */}
-            <div className={`font-mono text-[8px] tracking-[0.15em] mt-1 transition-all duration-300 ${
-              isActive ? "text-[#a3a3a3]" : "text-[#555]"
+            <div className={`font-mono text-[8.5px] tracking-[0.16em] mt-1 transition-all duration-300 ${
+              isActive ? "text-[#e4e4e7]" : "text-[#71717a]"
             }`}>
               {node.sublabel}
             </div>
@@ -303,7 +303,7 @@ export default function TopologicalEnvironment() {
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-2 text-[9px] text-[#888] font-mono tracking-widest"
+                  className="mt-2 text-[9.5px] text-[#a1a1aa] font-mono tracking-widest font-medium"
                 >
                   {node.content === "projects" ? "SELECT A SYSTEM BELOW" : "CLICK AGAIN TO EXPAND"}
                 </motion.div>
@@ -324,12 +324,12 @@ export default function TopologicalEnvironment() {
                   <div className="w-px h-6 bg-gradient-to-b from-[#E24A2B] to-transparent mb-2" />
                   
                   {/* Glassmorphism Container */}
-                  <div className="bg-[#0a0a0a]/80 backdrop-blur-md border border-[#333]/50 p-3 flex flex-col gap-2 shadow-2xl relative">
+                  <div className="bg-[#0a0a0a]/90 backdrop-blur-md border border-[#27272a] p-3 flex flex-col gap-2 shadow-2xl relative">
                     {/* Corner accents */}
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#555]" />
-                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[#555]" />
-                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[#555]" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#555]" />
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-[#52525b]" />
+                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-[#52525b]" />
+                    <div className="absolute bottom-0 left-0 w-1.5 h-1.5 border-b border-l border-[#52525b]" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-[#52525b]" />
                     
                     {projectsData.filter(p => p.featured).map((proj) => (
                       <motion.button
@@ -342,13 +342,13 @@ export default function TopologicalEnvironment() {
                           handleProjectClick(proj.id); 
                         }}
                         onMouseEnter={handleNodeHover}
-                        className="group text-[10px] font-mono text-[#a3a3a3] border border-[#222] px-6 py-2.5 tracking-[0.15em] hover:text-[#F5F5F0] hover:border-[#E24A2B] hover:bg-[#E24A2B]/5 transition-all duration-200 flex items-center justify-between min-w-[180px]"
+                        className="group text-[10.5px] font-mono text-[#d4d4d8] border border-[#27272a] px-6 py-2.5 tracking-[0.16em] hover:text-[#FFFFFF] hover:border-[#E24A2B] hover:bg-[#E24A2B]/10 transition-all duration-200 flex items-center justify-between min-w-[190px]"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-1 h-1 rounded-full bg-[#555] group-hover:bg-[#E24A2B] transition-colors shadow-[0_0_8px_rgba(226,74,43,0)] group-hover:shadow-[0_0_8px_rgba(226,74,43,0.8)]" />
-                          {proj.title.toUpperCase()}
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#52525b] group-hover:bg-[#E24A2B] transition-colors shadow-[0_0_8px_rgba(226,74,43,0)] group-hover:shadow-[0_0_8px_rgba(226,74,43,0.8)]" />
+                          <span className="font-medium">{proj.title.toUpperCase()}</span>
                         </div>
-                        {proj.liveUrl && <span className="text-[7px] text-[#E24A2B] border border-[#E24A2B]/30 px-1.5 py-0.5 ml-3">LIVE</span>}
+                        {proj.liveUrl && <span className="text-[7.5px] font-semibold text-[#E24A2B] border border-[#E24A2B]/40 px-1.5 py-0.5 ml-3 tracking-wider">LIVE</span>}
                       </motion.button>
                     ))}
                   </div>
@@ -655,17 +655,17 @@ export default function TopologicalEnvironment() {
       {/* ═══════════════ PERSISTENT HUD ═══════════════ */}
 
       {/* Bottom left: Exploration path */}
-      <div className="absolute bottom-5 left-6 z-20 pointer-events-none max-w-[300px]">
-        <div className="text-[7px] font-mono text-[#555] tracking-widest uppercase mb-1">YOUR EXPLORATION</div>
-        <div className="text-[9px] font-mono text-[#888] tracking-wider">
+      <div className="absolute bottom-5 left-6 z-20 pointer-events-none max-w-[320px]">
+        <div className="text-[7.5px] font-mono text-[#71717a] tracking-widest uppercase mb-1">YOUR EXPLORATION</div>
+        <div className="text-[9.5px] font-mono text-[#a1a1aa] tracking-wider">
           {explorationPath.length === 0 ? "—" : explorationPath.join(" → ")}
         </div>
       </div>
 
       {/* Bottom right: System status */}
       <div className="absolute bottom-5 right-6 z-20 pointer-events-none text-right">
-        <div className="text-[9px] font-mono text-[#666] tracking-widest tabular-nums">{systemTime}</div>
-        <div className="text-[7px] font-mono text-[#555] tracking-widest uppercase mt-0.5">
+        <div className="text-[9.5px] font-mono text-[#a1a1aa] tracking-widest tabular-nums font-medium">{systemTime}</div>
+        <div className="text-[7.5px] font-mono text-[#71717a] tracking-widest uppercase mt-0.5">
           {activeNode ? `NODE: ${activeNode.toUpperCase()}` : "STANDBY"}
         </div>
       </div>
@@ -673,19 +673,19 @@ export default function TopologicalEnvironment() {
       {/* Top right: Mode controls */}
       <div className="absolute top-5 right-6 flex gap-6 z-20">
         <button onClick={() => { handleCloseOverlay(); setActiveNode(null); }}
-          className={`text-[10px] font-mono tracking-widest uppercase transition-colors duration-300 ${!isQuickScan ? "text-[#a3a3a3]" : "text-[#555] hover:text-[#888]"}`}>
+          className={`text-[10.5px] font-mono tracking-widest uppercase transition-colors duration-300 font-medium ${!isQuickScan ? "text-[#F5F5F0]" : "text-[#71717a] hover:text-[#a1a1aa]"}`}>
           DEEP EXPLORE
         </button>
         <button onClick={() => setIsQuickScan(true)}
-          className={`text-[10px] font-mono tracking-widest uppercase transition-colors duration-300 ${isQuickScan ? "text-[#E24A2B]" : "text-[#555] hover:text-[#888]"}`}>
+          className={`text-[10.5px] font-mono tracking-widest uppercase transition-colors duration-300 font-medium ${isQuickScan ? "text-[#E24A2B]" : "text-[#71717a] hover:text-[#a1a1aa]"}`}>
           60 SECOND SCAN
         </button>
       </div>
 
       {/* Top left: Identity */}
       <div className="absolute top-5 left-6 z-20 pointer-events-none">
-        <div className="text-[11px] font-mono text-[#888] tracking-[0.25em]">MAAJ</div>
-        <div className="text-[7px] font-mono text-[#555] tracking-widest uppercase mt-0.5">ENGINEERING ARTIFACT v1.0</div>
+        <div className="text-[11.5px] font-mono text-[#F5F5F0] tracking-[0.25em] font-medium">MAAJ</div>
+        <div className="text-[7.5px] font-mono text-[#71717a] tracking-widest uppercase mt-0.5">ENGINEERING ARTIFACT v1.0</div>
       </div>
 
       {/* Secret Terminal */}
@@ -710,17 +710,17 @@ function ContentOverlay({ title, onClose, children, wide }) {
       transition={{ duration: 0.25 }}
       className="absolute inset-0 z-50 bg-[#050505] overflow-hidden flex flex-col"
     >
-      <div className="flex justify-between items-center px-6 sm:px-8 py-5 border-b border-[#141414] flex-shrink-0">
-        <div className="text-[10px] font-mono text-[#666] tracking-widest uppercase">{title}</div>
+      <div className="flex justify-between items-center px-6 sm:px-8 py-5 border-b border-[#1c1c1e] flex-shrink-0">
+        <div className="text-[10.5px] font-mono text-[#a1a1aa] tracking-widest uppercase font-medium">{title}</div>
         <button onClick={onClose}
-          className="text-[10px] font-mono text-[#444] tracking-widest uppercase hover:text-[#F5F5F0] transition-colors">
+          className="text-[10.5px] font-mono text-[#71717a] tracking-widest uppercase hover:text-[#F5F5F0] transition-colors">
           [ RETURN ]
         </button>
       </div>
       <div className={`flex-1 overflow-y-auto px-6 sm:px-8 py-8 ${wide ? "max-w-6xl" : "max-w-3xl"} mx-auto w-full`}>
         {children}
       </div>
-      <div className="px-6 sm:px-8 py-3 border-t border-[#141414] text-[7px] font-mono text-[#222] tracking-widest flex-shrink-0">
+      <div className="px-6 sm:px-8 py-3 border-t border-[#1c1c1e] text-[8px] font-mono text-[#52525b] tracking-widest flex-shrink-0">
         ESC TO RETURN
       </div>
     </motion.div>

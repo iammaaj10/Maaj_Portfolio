@@ -4,7 +4,7 @@ export const projectsData = [
     title: "MindLoom",
     tagline: "Personal AI Context & Learning Engine",
     category: "AI & Local Intelligence",
-    liveUrl: null,
+    liveUrl: "https://mind-loom-brown.vercel.app/",
     githubUrl: "https://github.com/iammaaj10/MindLoom",
     featured: true,
     nodeColor: "#3b82f6", // blue core
